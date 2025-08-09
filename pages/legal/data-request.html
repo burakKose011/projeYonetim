@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veri Talep Et - Proje Yönetim Sistemi</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <img src="../../assets/images/uniLogo.png" alt="İSTE Logo" class="logo-img">
+                <h1>Proje Yönetim Sistemi</h1>
+            </div>
+            <nav class="nav">
+                <a href="../auth/login.html" class="nav-link">
+                    <i class="fas fa-home"></i> Ana Sayfa
+                </a>
+                <a href="privacy-policy.html" class="nav-link">
+                    <i class="fas fa-shield-alt"></i> Gizlilik Politikası
+                </a>
+                <a href="data-request.html" class="nav-link active">
+                    <i class="fas fa-download"></i> Veri Talep Et
+                </a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <div class="request-container">
+                <h2><i class="fas fa-download"></i> KVKK Veri Talep Formu</h2>
+                
+                <div class="info-box">
+                    <h3><i class="fas fa-info-circle"></i> Bilgilendirme</h3>
+                    <p>6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında aşağıdaki haklarınızı kullanabilirsiniz:</p>
+                    <ul>
+                        <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
+                        <li>Kişisel verileriniz işlenmişse buna ilişkin bilgi talep etme</li>
+                        <li>Kişisel verilerinizin düzeltilmesini isteme</li>
+                        <li>Kişisel verilerinizin silinmesini isteme</li>
+                        <li>Kişisel verilerinizin aktarıldığı üçüncü kişileri bilme</li>
+                    </ul>
+                </div>
+
+                <form id="dataRequestForm" class="request-form">
+                    <div class="form-group">
+                        <label for="requestType">
+                            <i class="fas fa-list"></i> Talep Türü
+                        </label>
+                        <select id="requestType" name="requestType" required>
+                            <option value="">Seçiniz</option>
+                            <option value="info">Kişisel verilerimin işlenip işlenmediğini öğrenme</option>
+                            <option value="data">Kişisel verilerimi indirme</option>
+                            <option value="correct">Kişisel verilerimi düzeltme</option>
+                            <option value="delete">Kişisel verilerimi silme</option>
+                            <option value="third_party">Verilerimin aktarıldığı üçüncü kişileri bilme</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fullName">
+                            <i class="fas fa-user"></i> Ad Soyad
+                        </label>
+                        <input type="text" id="fullName" name="fullName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            <i class="fas fa-envelope"></i> E-posta Adresi
+                        </label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">
+                            <i class="fas fa-phone"></i> Telefon Numarası
+                        </label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tcNo">
+                            <i class="fas fa-id-card"></i> T.C. Kimlik Numarası
+                        </label>
+                        <input type="text" id="tcNo" name="tcNo" pattern="[0-9]{11}" maxlength="11" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">
+                            <i class="fas fa-comment"></i> Talep Açıklaması
+                        </label>
+                        <textarea id="description" name="description" rows="4" placeholder="Talebinizi detaylı olarak açıklayınız..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consent">
+                            <input type="checkbox" id="consent" name="consent" required>
+                            <span class="checkmark"></span>
+                            <i class="fas fa-check-circle"></i> 
+                            <a href="privacy-policy.html" target="_blank">Gizlilik Politikası</a>'nı okudum ve kabul ediyorum
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i> Talebi Gönder
+                        </button>
+                        <button type="reset" class="btn btn-secondary">
+                            <i class="fas fa-undo"></i> Formu Temizle
+                        </button>
+                    </div>
+                </form>
+
+                <div class="contact-info">
+                    <h3><i class="fas fa-phone"></i> İletişim Bilgileri</h3>
+                    <p>KVKK kapsamındaki haklarınızı kullanmak için aşağıdaki kanallardan da iletişime geçebilirsiniz:</p>
+                    <ul>
+                        <li><strong>E-posta:</strong> kvkk@iste.edu.tr</li>
+                        <li><strong>Telefon:</strong> 0326 613 56 00</li>
+                        <li><strong>Adres:</strong> Bilimin Işığında, Geleceğe Yolculuk, Merkez Kampüsü, İskenderun/Hatay</li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 Bilimin Işığında, Geleceğe Yolculuk. Tüm hakları saklıdır.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('dataRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Form verilerini al
+            const formData = new FormData(this);
+            const requestData = Object.fromEntries(formData);
+            
+            // Talep türüne göre mesaj
+            const requestTypes = {
+                'info': 'Kişisel verilerinizin işlenip işlenmediği hakkında bilgi talebi',
+                'data': 'Kişisel verilerinizi indirme talebi',
+                'correct': 'Kişisel verilerinizi düzeltme talebi',
+                'delete': 'Kişisel verilerinizi silme talebi',
+                'third_party': 'Verilerinizin aktarıldığı üçüncü kişiler hakkında bilgi talebi'
+            };
+            
+            const message = `
+                KVKK Veri Talep Formu Gönderildi
+            
+                Talep Türü: ${requestTypes[requestData.requestType]}
+                Ad Soyad: ${requestData.fullName}
+                E-posta: ${requestData.email}
+                Telefon: ${requestData.phone}
+                T.C. Kimlik No: ${requestData.tcNo}
+                Açıklama: ${requestData.description}
+                
+                Talebiniz alınmıştır. En kısa sürede size dönüş yapılacaktır.
+                İletişim: kvkk@iste.edu.tr
+            `;
+            
+            alert(message);
+            
+            // Formu temizle
+            this.reset();
+        });
+    </script>
+</body>
+</html> 

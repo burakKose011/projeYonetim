@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yeni Proje Ekle</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <div class="logo-container">
+                    <img src="../../assets/images/uniLogo.png" alt="Bilimin Işığında, Geleceğe Yolculuk" class="logo">
+        <div class="logo-glow"></div>
+      </div>
+      <div class="header-text">
+        <h1 class="main-title">Proje Yönetim Sistemi</h1>
+        <div class="university-info">
+          <span class="university-name">Bilimin Işığında, Geleceğe Yolculuk</span>
+          <span class="faculty-name">Mühendislik ve Doğa Bilimleri Fakültesi</span>
+          <span class="department-name">Bilgisayar Mühendisliği Bölümü</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-decoration"></div>
+  </div>
+  <div class="container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">
+          <i class="fas fa-rocket"></i>
+          Proje Yönetimi
+        </h3>
+        <p class="sidebar-subtitle">Projelerinizi yönetin ve takip edin</p>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Ana Menü</h4>
+        <div class="sidebar-nav">
+          <a href="../dashboard/dashboard.html">
+            <i class="fas fa-tachometer-alt"></i>
+            Panel
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Proje İşlemleri</h4>
+        <div class="sidebar-nav">
+          <a href="add_project.html" class="active">
+            <i class="fas fa-plus-circle"></i>
+            Yeni Proje Ekle
+          </a>
+          <a href="project_list.html">
+            <i class="fas fa-list-alt"></i>
+            Proje Listesi
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Hesap</h4>
+        <div class="sidebar-nav">
+          <a href="../dashboard/profile.html">
+            <i class="fas fa-user-circle"></i>
+            Bilgilerim
+          </a>
+          <a href="../auth/login.html">
+            <i class="fas fa-sign-out-alt"></i>
+            Çıkış
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <p class="sidebar-version">v2.0.1 - 2025</p>
+      </div>
+    </nav>
+    <main class="main-content" id="main-content">
+      <h2>
+        <i class="fas fa-plus-circle" style="margin-right: 12px; color: var(--primary-color);"></i>
+        Yeni Proje Ekle
+      </h2>
+      
+      <form enctype="multipart/form-data" id="projectForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+        <div>
+          <label>
+            <i class="fas fa-users" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Sorumluları:
+          </label>
+          <input type="text" id="sorumlu" placeholder="Proje sorumlusunun adını girin">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-project-diagram" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Adı:
+          </label>
+          <input type="text" id="adi" placeholder="Proje adını girin">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-lightbulb" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Konusu:
+          </label>
+          <input type="text" id="konu" placeholder="Proje konusunu girin">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-calendar-plus" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Başlangıç Tarihi:
+          </label>
+          <input type="date" id="baslangic">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-calendar-check" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Bitiş Tarihi:
+          </label>
+          <input type="date" id="bitis">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-clock" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Bitiş Süresi (gün):
+          </label>
+          <input type="number" id="sure" min="1" placeholder="Örn: 180">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-tags" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Anahtar Kelimeler:
+          </label>
+          <input type="text" id="anahtar" placeholder="kelime1, kelime2, kelime3">
+        </div>
+
+        <div>
+          <label>
+            <i class="fas fa-user-tie" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Yöneticisi:
+          </label>
+          <input type="text" id="yonetici" placeholder="Proje yöneticisinin adını girin">
+        </div>
+
+        <div style="grid-column: 1 / -1;">
+          <label>
+            <i class="fas fa-align-left" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Tanımı:
+          </label>
+          <textarea rows="4" id="tanim" placeholder="Proje hakkında detaylı açıklama yazın..."></textarea>
+        </div>
+
+        <div style="grid-column: 1 / -1;">
+          <label>
+            <i class="fas fa-paperclip" style="margin-right: 8px; color: var(--primary-color);"></i>
+            Proje Dosyası (PDF, Word, vb.):
+          </label>
+          <input type="file" name="proje_dosyasi" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.jpg,.jpeg,.png">
+          <div style="margin-top: 8px; font-size: 0.9rem; color: var(--gray-600);">
+            <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
+            Desteklenen formatlar: PDF, Word, Excel, PowerPoint, Zip, Resim dosyaları
+          </div>
+        </div>
+
+        <div style="grid-column: 1 / -1; display: flex; gap: 16px; justify-content: flex-end; margin-top: 16px;">
+          <button type="button" onclick="window.location.href='project_list.html'" style="background: var(--gray-500); color: white; border: none; padding: 14px 28px; border-radius: var(--border-radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fas fa-times"></i>
+            İptal
+          </button>
+          <button type="submit" id="formBtn" style="background: linear-gradient(135deg, var(--success-color), #38a169); color: white; border: none; padding: 14px 28px; border-radius: var(--border-radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-md);">
+            <i class="fas fa-save"></i>
+            Kaydet
+          </button>
+        </div>
+      </form>
+
+      <div style="margin-top: 40px; padding: 24px; background: rgba(72, 187, 120, 0.05); border-radius: var(--border-radius); border: 1px solid rgba(72, 187, 120, 0.1);">
+        <h3 style="margin: 0 0 16px 0; color: var(--gray-800); display: flex; align-items: center;">
+          <i class="fas fa-lightbulb" style="margin-right: 12px; color: var(--success-color);"></i>
+          Proje Ekleme İpuçları
+        </h3>
+        <ul style="margin: 0; padding-left: 20px; color: var(--gray-700); line-height: 1.8;">
+          <li><strong>Proje Adı:</strong> Kısa ve açıklayıcı bir isim seçin</li>
+          <li><strong>Tarihler:</strong> Gerçekçi başlangıç ve bitiş tarihleri belirleyin</li>
+          <li><strong>Anahtar Kelimeler:</strong> Projeyi tanımlayan önemli kelimeleri virgülle ayırarak yazın</li>
+          <li><strong>Proje Tanımı:</strong> Projenin amacını ve kapsamını detaylı bir şekilde açıklayın</li>
+          <li><strong>Dosya Yükleme:</strong> Proje ile ilgili dökümanları ekleyebilirsiniz</li>
+        </ul>
+      </div>
+    </main>
+  </div>
+  <footer>
+    <div>Proje Yönetim Sistemi 2025<br>Proje Yönetim Sistemi - Burak Köse - Bilimin Işığında, Geleceğe Yolculuk</div>
+  </footer>
+  <script>
+    // Project data
+    const projectData = {
+      52: {
+        id: 52,
+        sorumlu: 'İlkay Ateş',
+        adi: 'Proje Yönetim Sistemi',
+        konu: 'Yazılım Geliştirme',
+        baslangic: '2024-01-01',
+        bitis: '2024-06-01',
+        sure: 150,
+        anahtar: 'yönetim, yazılım, proje, sistem',
+        yonetici: 'Burak Köse',
+        tanim: 'Proje yönetim süreçlerini kolaylaştıran ve takip eden modern bir web sistemi. Kullanıcı dostu arayüz ile projeler kolayca yönetilebilir.'
+      },
+      54: {
+        id: 54,
+        sorumlu: 'İlkay Ateş',
+        adi: 'Software Programming Final',
+        konu: 'Yazılım Programlama',
+        baslangic: '2024-02-15',
+        bitis: '2024-05-30',
+        sure: 105,
+        anahtar: 'programlama, yazılım, final, proje',
+        yonetici: 'Burak Köse',
+        tanim: 'Yazılım programlama dersi kapsamında geliştirilen final projesi. Modern teknolojiler kullanılarak geliştirilmiştir.'
+      }
+    };
+
+    window.onload = function() {
+      document.getElementById('main-content').classList.add('visible');
+      
+      const params = new URLSearchParams(window.location.search);
+      const detayId = params.get('detay');
+      const guncelleId = params.get('guncelle');
+
+      if (detayId) {
+        // Detay modunda
+        const project = projectData[detayId];
+        if (project) {
+          document.querySelector('h2').innerHTML = `<i class="fas fa-folder-open" style="margin-right: 12px; color: var(--primary-color);"></i>Proje Detayları - #${project.id}`;
+          fillFormData(project);
+          makeFieldsReadonly();
+          hideSubmitButton();
+        }
+      } else if (guncelleId) {
+        // Güncelleme modunda
+        const project = projectData[guncelleId];
+        if (project) {
+          document.querySelector('h2').innerHTML = `<i class="fas fa-edit" style="margin-right: 12px; color: var(--warning-color);"></i>Proje Güncelle - #${project.id}`;
+          fillFormData(project);
+          document.getElementById('formBtn').innerHTML = '<i class="fas fa-save"></i>Güncelle';
+        }
+      }
+    };
+
+    function fillFormData(project) {
+      document.getElementById('sorumlu').value = project.sorumlu;
+      document.getElementById('adi').value = project.adi;
+      document.getElementById('konu').value = project.konu;
+      document.getElementById('baslangic').value = project.baslangic;
+      document.getElementById('bitis').value = project.bitis;
+      document.getElementById('sure').value = project.sure;
+      document.getElementById('anahtar').value = project.anahtar;
+      document.getElementById('yonetici').value = project.yonetici;
+      document.getElementById('tanim').value = project.tanim;
+    }
+
+    function makeFieldsReadonly() {
+      const fields = [
+        'sorumlu', 'adi', 'konu', 'baslangic', 'bitis', 
+        'sure', 'anahtar', 'yonetici', 'tanim'
+      ];
+      
+      fields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+          field.readOnly = true;
+          field.style.background = 'var(--gray-100)';
+          field.style.cursor = 'not-allowed';
+          field.style.color = 'var(--gray-600)';
+        }
+      });
+
+      // Dosya input'unu gizle
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) {
+        fileInput.style.display = 'none';
+        fileInput.parentElement.style.display = 'none';
+      }
+    }
+
+    function hideSubmitButton() {
+      const submitBtn = document.getElementById('formBtn');
+      const cancelBtn = submitBtn.previousElementSibling;
+      
+      // Kaydet butonunu gizle
+      submitBtn.style.display = 'none';
+      
+      // İptal butonunu Geri Dön olarak değiştir
+      cancelBtn.innerHTML = '<i class="fas fa-arrow-left"></i>Geri Dön';
+    }
+
+    // Form validasyonu
+    document.getElementById('projectForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const params = new URLSearchParams(window.location.search);
+      const detayId = params.get('detay');
+      
+      // Detay modunda form submit edilmemeli
+      if (detayId) {
+        return;
+      }
+      
+      const requiredFields = ['sorumlu', 'adi', 'konu', 'yonetici'];
+      let isValid = true;
+      
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+          field.style.borderColor = 'var(--danger-color)';
+          isValid = false;
+        } else {
+          field.style.borderColor = 'var(--gray-200)';
+        }
+      });
+      
+      if (isValid) {
+        // Başarı mesajı göster
+        const submitBtn = document.getElementById('formBtn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-check"></i>Kaydediliyor...';
+        submitBtn.disabled = true;
+        
+        const guncelleId = params.get('guncelle');
+        if (guncelleId) {
+          alert('Proje başarıyla güncellendi!');
+          window.location.href = 'project_list.html';
+        } else {
+          // Yeni proje ekle
+          const success = await saveProject();
+          if (success) {
+            alert('Proje başarıyla kaydedildi! Admin onayı bekleniyor.');
+            window.location.href = 'project_list.html';
+          } else {
+            // Hata durumunda butonu tekrar aktif et
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+          }
+        }
+      } else {
+        alert('Lütfen zorunlu alanları doldurun!');
+      }
+    });
+
+    // Projeyi API'ye kaydet
+    async function saveProject() {
+      try {
+        const fileInput = document.querySelector('input[type="file"]');
+        let fileInfo = null;
+        
+        // Dosya bilgisini al
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          fileInfo = {
+            name: file.name,
+            size: formatFileSize(file.size),
+            type: getFileType(file.name),
+            uploadDate: new Date().toISOString()
+          };
+        }
+        
+        const formData = {
+          action: 'add',
+          title: document.getElementById('adi').value.trim(),
+          subject: document.getElementById('konu').value.trim(),
+          description: document.getElementById('tanim').value.trim(),
+          keywords: document.getElementById('anahtar').value.trim(),
+          project_manager: document.getElementById('yonetici').value.trim(),
+          responsible_person: document.getElementById('sorumlu').value.trim(),
+          start_date: document.getElementById('baslangic').value,
+          end_date: document.getElementById('bitis').value,
+          duration_days: parseInt(document.getElementById('sure').value) || 0,
+          file_info: fileInfo
+        };
+        
+        console.log('API\'ye gönderilen veri:', formData);
+        
+                    const response = await fetch('../../api/projects.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        console.log('API yanıtı:', result);
+        
+        if (result.success) {
+          console.log('Proje başarıyla eklendi:', result);
+          return true;
+        } else {
+          console.error('Proje eklenirken hata:', result.message);
+          alert('Proje oluşturulurken hata oluştu: ' + result.message);
+          return false;
+        }
+      } catch (error) {
+        console.error('Proje eklenirken hata:', error);
+        alert('Proje oluşturulurken hata oluştu! Lütfen tekrar deneyin.');
+        return false;
+      }
+    }
+
+    // Dosya boyutunu formatla
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    // Dosya tipini belirle
+    function getFileType(fileName) {
+      const extension = fileName.split('.').pop().toLowerCase();
+      const typeMap = {
+        'pdf': 'PDF Dosyası',
+        'doc': 'Word Belgesi',
+        'docx': 'Word Belgesi',
+        'xls': 'Excel Dosyası',
+        'xlsx': 'Excel Dosyası',
+        'ppt': 'PowerPoint Sunumu',
+        'pptx': 'PowerPoint Sunumu',
+        'zip': 'ZIP Arşivi',
+        'rar': 'RAR Arşivi',
+        'txt': 'Metin Dosyası',
+        'jpg': 'JPEG Resmi',
+        'jpeg': 'JPEG Resmi',
+        'png': 'PNG Resmi'
+      };
+      return typeMap[extension] || 'Dosya';
+    }
+  </script>
+</body>
+</html> 

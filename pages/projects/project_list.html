@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proje Listesi</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    /* Tooltip CSS */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 300px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      border-radius: 8px;
+      padding: 12px;
+      position: absolute;
+      z-index: 1000;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -150px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .tooltip .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+    
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <div class="logo-container">
+        <img src="../../assets/images/uniLogo.png" alt="İskenderun Teknik Üniversitesi" class="logo">
+        <div class="logo-glow"></div>
+      </div>
+      <div class="header-text">
+        <h1 class="main-title">Proje Yönetim Sistemi</h1>
+        <div class="university-info">
+          <span class="university-name">İskenderun Teknik Üniversitesi</span>
+          <span class="faculty-name">Mühendislik ve Doğa Bilimleri Fakültesi</span>
+          <span class="department-name">Bilgisayar Mühendisliği Bölümü</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-decoration"></div>
+  </div>
+  <div class="container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">
+          <i class="fas fa-rocket"></i>
+          Proje Yönetimi
+        </h3>
+        <p class="sidebar-subtitle">Projelerinizi yönetin ve takip edin</p>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Ana Menü</h4>
+        <div class="sidebar-nav">
+          <a href="../dashboard/dashboard.html">
+            <i class="fas fa-tachometer-alt"></i>
+            Panel
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Proje İşlemleri</h4>
+        <div class="sidebar-nav">
+          <a href="add_project.html">
+            <i class="fas fa-plus-circle"></i>
+            Yeni Proje Ekle
+          </a>
+          <a href="project_list.html" class="active">
+            <i class="fas fa-list-alt"></i>
+            Proje Listesi
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Hesap</h4>
+        <div class="sidebar-nav">
+          <a href="../dashboard/profile.html">
+            <i class="fas fa-user-circle"></i>
+            Bilgilerim
+          </a>
+          <a href="../auth/login.html">
+            <i class="fas fa-sign-out-alt"></i>
+            Çıkış
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <p class="sidebar-version">v2.0.1 - 2025</p>
+      </div>
+    </nav>
+    <main class="main-content" id="main-content">
+      <h2>
+        <i class="fas fa-list-alt" style="margin-right: 12px; color: var(--primary-color);"></i>
+        Proje Listesi
+      </h2>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="background: rgba(102, 126, 234, 0.1); color: var(--primary-color); padding: 8px 16px; border-radius: 20px; font-weight: 600; font-size: 0.9rem;" id="totalProjects">
+            <i class="fas fa-chart-bar" style="margin-right: 6px;"></i>
+            Toplam: 0 Proje
+          </div>
+        </div>
+        <a href="add_project.html" style="display: inline-flex; align-items: center; background: linear-gradient(135deg, var(--success-color), #38a169); color: white; padding: 12px 24px; border-radius: var(--border-radius); text-decoration: none; font-weight: 600; box-shadow: var(--shadow-md); transition: var(--transition);">
+          <i class="fas fa-plus" style="margin-right: 8px;"></i>
+          Yeni Proje Ekle
+        </a>
+      </div>
+
+      <table id="projectTable">
+        <thead>
+          <tr>
+            <th style="width: 35%;">
+              <i class="fas fa-project-diagram" style="margin-right: 8px;"></i>
+              Proje Adı
+            </th>
+            <th style="width: 20%;">
+              <i class="fas fa-user-tie" style="margin-right: 8px;"></i>
+              Proje Sorumlusu
+            </th>
+            <th style="width: 25%;">
+              <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+              Proje Durumu
+            </th>
+            <th style="width: 20%;">
+              <i class="fas fa-cog" style="margin-right: 8px;"></i>
+              İşlemler
+            </th>
+          </tr>
+        </thead>
+        <tbody id="projectTableBody">
+          <!-- Projeler JavaScript ile yüklenecek -->
+        </tbody>
+      </table>
+
+      <div id="emptyState" style="display: none; text-align: center; padding: 60px 20px; background: white; border-radius: var(--border-radius); box-shadow: var(--shadow-sm);">
+        <i class="fas fa-inbox" style="font-size: 4rem; color: var(--gray-300); margin-bottom: 20px;"></i>
+        <h3 style="color: var(--gray-600); margin-bottom: 10px;">Henüz proje bulunmuyor</h3>
+        <p style="color: var(--gray-500); margin-bottom: 30px;">İlk projenizi ekleyerek başlayın!</p>
+        <a href="add_project.html" style="display: inline-flex; align-items: center; background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); color: white; padding: 12px 24px; border-radius: var(--border-radius); text-decoration: none; font-weight: 600; box-shadow: var(--shadow-md);">
+          <i class="fas fa-plus" style="margin-right: 8px;"></i>
+          İlk Projenizi Ekleyin
+        </a>
+      </div>
+
+      <div style="margin-top: 32px; padding: 24px; background: rgba(102, 126, 234, 0.05); border-radius: var(--border-radius); border: 1px solid rgba(102, 126, 234, 0.1);">
+        <h3 style="margin: 0 0 16px 0; color: var(--gray-800); display: flex; align-items: center;">
+          <i class="fas fa-info-circle" style="margin-right: 12px; color: var(--primary-color);"></i>
+          Proje Durumları
+        </h3>
+        
+
+        <div style="display: flex; flex-wrap: wrap; gap: 16px;" id="statusStats">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge status-pending">
+              <i class="fas fa-clock"></i>
+              Bekliyor
+            </span>
+            <span style="color: var(--gray-600); font-size: 0.9rem;">0 proje</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge status-approved">
+              <i class="fas fa-check-circle"></i>
+              Onaylandı
+            </span>
+            <span style="color: var(--gray-600); font-size: 0.9rem;">0 proje</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge status-rejected">
+              <i class="fas fa-times-circle"></i>
+              Reddedildi
+            </span>
+            <span style="color: var(--gray-600); font-size: 0.9rem;">0 proje</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reddedilme Sebepleri Bilgi Kutusu -->
+      <div id="rejection-info-box" style="margin-top: 24px; padding: 20px; background: rgba(239, 68, 68, 0.05); border-radius: var(--border-radius); border: 1px solid rgba(239, 68, 68, 0.2);">
+        <h4 style="margin: 0 0 12px 0; color: var(--danger-color); display: flex; align-items: center;">
+          <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+          Reddedilme Sebepleri Hakkında
+        </h4>
+        <p style="margin: 0; color: var(--gray-700); font-size: 0.9rem; line-height: 1.5;">
+          Reddedilen projeleriniz için admin tarafından belirtilen sebepler, proje durumu sütununda 
+          <i class="fas fa-exclamation-triangle" style="color: var(--danger-color); margin: 0 4px;"></i>
+          ikonu ile birlikte gösterilir. Detaylı bilgi için projenin "Detay" butonuna tıklayabilirsiniz.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal -->
+  <div id="projectModal" class="modal">
+    <div class="modal-content" style="max-height: 90vh; overflow: hidden; display: flex; flex-direction: column; margin: 2% auto;">
+      <div class="modal-header">
+        <h3 id="modalTitle">
+          <i class="fas fa-folder-open" style="margin-right: 12px; color: white;"></i>
+          Proje Detayları
+        </h3>
+        <span class="close" onclick="closeModal()">&times;</span>
+      </div>
+      <div class="modal-body" style="flex: 1; overflow-y: auto; min-height: 0;">
+        <!-- Detail View -->
+        <div id="detailView">
+          <div class="detail-grid">
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-users" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Sorumluları:
+              </label>
+              <span id="detail-sorumlu">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-project-diagram" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Adı:
+              </label>
+              <span id="detail-adi">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-lightbulb" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Konusu:
+              </label>
+              <span id="detail-konu">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-calendar-plus" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Başlangıç Tarihi:
+              </label>
+              <span id="detail-baslangic">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-calendar-check" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Bitiş Tarihi:
+              </label>
+              <span id="detail-bitis">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-clock" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Bitiş Süresi:
+              </label>
+              <span id="detail-sure">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-tags" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Anahtar Kelimeler:
+              </label>
+              <span id="detail-anahtar">-</span>
+            </div>
+
+            <div class="detail-item">
+              <label>
+                <i class="fas fa-user-tie" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Yöneticisi:
+              </label>
+              <span id="detail-yonetici">-</span>
+            </div>
+
+            <div class="detail-item full-width">
+              <label>
+                <i class="fas fa-align-left" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Tanımı:
+              </label>
+              <p id="detail-tanim">-</p>
+            </div>
+
+            <div class="detail-item full-width" id="rejection-reason-container" style="display: none;">
+              <label>
+                <i class="fas fa-exclamation-triangle" style="margin-right: 8px; color: var(--danger-color);"></i>
+                Reddetme Sebebi:
+              </label>
+              <div id="detail-rejection-reason" style="color: var(--danger-color); font-weight: 500; background: rgba(239, 68, 68, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--danger-color); display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-info-circle" style="font-size: 1.1rem;"></i>
+                <span style="flex: 1;">-</span>
+              </div>
+            </div>
+
+            <div class="detail-item full-width">
+              <label>
+                <i class="fas fa-file-alt" style="margin-right: 8px; color: var(--primary-color);"></i>
+                Proje Dosyası:
+              </label>
+              <div id="detail-dosya" style="color: var(--gray-500); font-style: italic;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit View -->
+        <div id="editView" style="display: none;">
+          <form id="editForm">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+              <div>
+                <label>
+                  <i class="fas fa-user" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Kullanıcı Adı:
+                </label>
+                <input type="text" id="edit-kullanici" required readonly style="background-color: var(--gray-100);">
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-users" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Sorumluları:
+                </label>
+                <input type="text" id="edit-sorumlu" required>
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-project-diagram" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Adı:
+                </label>
+                <input type="text" id="edit-adi" required>
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-lightbulb" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Konusu:
+                </label>
+                <input type="text" id="edit-konu" required>
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-calendar-plus" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Başlangıç Tarihi:
+                </label>
+                <input type="date" id="edit-baslangic">
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-calendar-check" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Bitiş Tarihi:
+                </label>
+                <input type="date" id="edit-bitis">
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-clock" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Bitiş Süresi (gün):
+                </label>
+                <input type="number" id="edit-sure" min="1">
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-tags" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Anahtar Kelimeler:
+                </label>
+                <input type="text" id="edit-anahtar">
+              </div>
+
+              <div>
+                <label>
+                  <i class="fas fa-user-tie" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Yöneticisi:
+                </label>
+                <input type="text" id="edit-yonetici" required>
+              </div>
+
+              <div style="grid-column: 1 / -1;">
+                <label>
+                  <i class="fas fa-align-left" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Tanımı:
+                </label>
+                <textarea rows="4" id="edit-tanim"></textarea>
+              </div>
+
+              <div style="grid-column: 1 / -1;">
+                <label>
+                  <i class="fas fa-paperclip" style="margin-right: 8px; color: var(--primary-color);"></i>
+                  Proje Dosyası (PDF, Word, vb.):
+                </label>
+                <input type="file" id="edit-dosya" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.jpg,.jpeg,.png">
+                <div style="margin-top: 8px; font-size: 0.9rem; color: var(--gray-600);">
+                  <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
+                  Desteklenen formatlar: PDF, Word, Excel, PowerPoint, Zip, Resim dosyaları
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 16px 32px; background: var(--gray-50); border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 10px; flex-shrink: 0; min-height: auto;">
+        <div id="detailButtons" style="display: none;">
+          <!-- Detay modunda footer boş - sadece üstteki X butonu kullanılıyor -->
+        </div>
+        <div id="editButtons" style="display: none; gap: 10px;">
+          <button type="button" onclick="cancelEdit()" style="background: var(--gray-500); color: white; border: none; padding: 10px 20px; border-radius: var(--border-radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fas fa-times"></i>
+            İptal
+          </button>
+          <button type="button" onclick="saveProject()" id="saveBtn" style="background: linear-gradient(135deg, var(--warning-color), #d69e2e); color: white; border: none; padding: 10px 20px; border-radius: var(--border-radius); font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; box-shadow: var(--shadow-md);">
+            <i class="fas fa-edit"></i>
+            Düzenle
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>Proje Yönetim Sistemi 2025<br>Proje Yönetim Sistemi - Burak Köse - İskenderun Teknik Üniversitesi</div>
+  </footer>
+
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .modal.show {
+      opacity: 1;
+    }
+    
+    .modal-content {
+      background-color: var(--white);
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--gray-200);
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      border-radius: 12px 12px 0 0;
+    }
+    
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    
+    .close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .close:hover {
+      opacity: 0.7;
+    }
+    
+    .modal-body {
+      padding: 24px;
+      line-height: 1.6;
+    }
+    
+    .detail-item {
+      margin-bottom: 16px;
+      padding: 12px;
+      background: var(--gray-50);
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .detail-item label {
+      display: block;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+    
+    .detail-item span,
+    .detail-item p {
+      color: var(--gray-800);
+      font-weight: 500;
+    }
+    
+    .detail-item.full-width {
+      grid-column: 1 / -1;
+    }
+    
+    .detail-item.full-width p {
+      margin: 8px 0 0 0;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    
+    /* Form Styles */
+    #editForm {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    #editForm > div {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    #editForm label {
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    
+    #editForm input,
+    #editForm textarea {
+      padding: 12px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    
+    #editForm input:focus,
+    #editForm textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    #editForm textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        margin: 10% auto;
+      }
+      
+      #editForm {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+  </style>
+
+  <script>
+    let userProjects = [];
+    let currentProjectId = null;
+    let currentUser = null;
+
+    window.onload = function() {
+      // Kullanıcı giriş kontrolü
+      if (!localStorage.getItem('userLoggedIn')) {
+        alert('Bu sayfaya erişim yetkiniz yok!');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentUser = localStorage.getItem('username');
+      document.getElementById('main-content').classList.add('visible');
+      loadUserProjects();
+    };
+
+    // Kullanıcının projelerini yükle
+    async function loadUserProjects() {
+      try {
+        // Backend'den proje listesini al
+                    const response = await fetch('../../api/projects.php?action=list');
+        const result = await response.json();
+        
+        if (result.success) {
+          // Proje verilerini formatla
+          userProjects = result.projects.map(project => ({
+            id: parseInt(project.id),
+            sorumlu: project.responsible_person,
+            adi: project.title,
+            konu: project.subject,
+            baslangic: project.start_date,
+            bitis: project.end_date,
+            sure: project.duration_days,
+            anahtar: project.keywords,
+            yonetici: project.project_manager,
+            tanim: project.description,
+            status: project.status,
+            creator_name: project.creator_name,
+            dosya: project.file_info,
+            rejection_reason: project.rejection_reason
+          }));
+        } else {
+          console.error('Proje listesi alınamadı:', result.message);
+          // API'den veri gelmezse boş liste göster
+          userProjects = [];
+        }
+        
+        displayProjects();
+        updateStats();
+      } catch (error) {
+        console.error('Proje listesi yüklenirken hata:', error);
+        // Hata durumunda boş liste göster
+        userProjects = [];
+        displayProjects();
+        updateStats();
+      }
+    }
+
+    // Projeleri tabloda göster
+    function displayProjects() {
+      const tableBody = document.getElementById('projectTableBody');
+      const emptyState = document.getElementById('emptyState');
+      const projectTable = document.getElementById('projectTable');
+      
+      // Debug: Reddedilen projeleri kontrol et
+      const rejectedProjects = userProjects.filter(p => p.status === 'rejected');
+      console.log('Reddedilen projeler:', rejectedProjects);
+      rejectedProjects.forEach(project => {
+        console.log(`Proje: ${project.title || project.adi}, Rejection reason:`, project.rejection_reason);
+        console.log('Tüm proje alanları:', Object.keys(project));
+        console.log('Proje objesi:', project);
+        console.log('Rejection reason değeri:', project.rejection_reason);
+        console.log('Rejection reason tipi:', typeof project.rejection_reason);
+        console.log('Rejection reason boş mu:', project.rejection_reason === null || project.rejection_reason === undefined || project.rejection_reason === '');
+      });
+      
+      if (userProjects.length === 0) {
+        projectTable.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      projectTable.style.display = 'table';
+      emptyState.style.display = 'none';
+      
+      tableBody.innerHTML = userProjects.map(project => {
+        const statusInfo = getStatusInfo(project.status);
+        const initials = getInitials(project.responsible_person || project.sorumlu);
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center;">
+                <i class="fas ${statusInfo.icon}" style="margin-right: 8px; color: ${statusInfo.color};"></i>
+                <span style="font-weight: 600;">${project.title || project.adi}</span>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; align-items: center;">
+                <div style="width: 32px; height: 32px; background: linear-gradient(135deg, ${statusInfo.color}, ${statusInfo.color}aa); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; margin-right: 12px; font-size: 0.9rem;">${initials}</div>
+                <span>${project.responsible_person || project.sorumlu}</span>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge status-${getStatusClass(project.status)}">
+                <i class="fas ${statusInfo.icon}" style="margin-right: 6px;"></i>
+                ${statusInfo.text}
+              </span>
+              ${project.status === 'rejected' ? `
+                <div class="tooltip" style="display: inline-block; margin-left: 8px;">
+                  <div style="width: 24px; height: 24px; background: linear-gradient(135deg, var(--danger-color), #dc3545); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: help; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3); border: 2px solid rgba(255, 255, 255, 0.2);">
+                    <i class="fas fa-exclamation-triangle" style="color: white; font-size: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);"></i>
+                  </div>
+                  <span class="tooltiptext">
+                    <strong>Reddetme Sebebi:</strong><br>
+                    ${project.rejection_reason || 'Sebep belirtilmemiş'}
+                  </span>
+                </div>
+              ` : ''}
+            </td>
+            <td>
+              <div style="display: flex; gap: 8px;">
+                <button onclick="showDetailModal(${project.id})" class="detail-btn">
+                  <i class="fas fa-eye"></i>
+                  Detay
+                </button>
+                ${project.status === 'pending' ? `
+                  <button onclick="showEditModal(${project.id})" style="display: inline-flex; align-items: center; background: linear-gradient(135deg, var(--warning-color), #d69e2e); color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; border: none; cursor: pointer; box-shadow: var(--shadow-sm); transition: var(--transition); gap: 6px;">
+                    <i class="fas fa-edit"></i>
+                    Düzenle
+                  </button>
+                  <button onclick="deleteProject(${project.id})" style="display: inline-flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--danger-color), #dc3545); color: white; padding: 8px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; border: none; cursor: pointer; box-shadow: var(--shadow-sm); transition: var(--transition); min-width: 36px; height: 36px;" title="Projeyi Sil">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                ` : `
+                  <button disabled style="display: inline-flex; align-items: center; background: var(--gray-400); color: var(--gray-600); padding: 8px 16px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; border: none; cursor: not-allowed; opacity: 0.6; gap: 6px;">
+                    <i class="fas fa-edit"></i>
+                    Düzenle
+                  </button>
+                  <button disabled style="display: inline-flex; align-items: center; justify-content: center; background: var(--gray-400); color: var(--gray-600); padding: 8px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; border: none; cursor: not-allowed; opacity: 0.6; min-width: 36px; height: 36px;" title="Silme Devre Dışı">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                `}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // İstatistikleri güncelle
+    function updateStats() {
+      // Toplam proje sayısını güncelle
+      const totalProjectsElement = document.getElementById('totalProjects');
+      if (totalProjectsElement) {
+        totalProjectsElement.innerHTML = `
+          <i class="fas fa-chart-bar" style="margin-right: 6px;"></i>
+          Toplam: ${userProjects.length} Proje
+        `;
+      }
+      
+      // Durum istatistikleri
+      const pendingCount = userProjects.filter(p => p.status === 'pending').length;
+      const approvedCount = userProjects.filter(p => p.status === 'approved').length;
+      const rejectedCount = userProjects.filter(p => p.status === 'rejected').length;
+      
+      // Durum bilgilerini güncelle
+      const statusStatsElement = document.getElementById('statusStats');
+      if (statusStatsElement) {
+        statusStatsElement.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge status-pending">
+              <i class="fas fa-clock"></i>
+              Bekliyor
+            </span>
+            <span style="color: var(--gray-600); font-size: 0.9rem;">${pendingCount} proje</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge status-approved">
+              <i class="fas fa-check-circle"></i>
+              Onaylandı
+            </span>
+            <span style="color: var(--gray-600); font-size: 0.9rem;">${approvedCount} proje</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="status-badge status-rejected">
+              <i class="fas fa-times-circle"></i>
+              Reddedildi
+            </span>
+            <span style="color: var(--gray-600); font-size: 0.9rem;">${rejectedCount} proje</span>
+          </div>
+        `;
+      }
+
+      // Reddedilme sebepleri bilgi kutucuğunu göster/gizle
+      const rejectionInfoBox = document.getElementById('rejection-info-box');
+      if (rejectionInfoBox) {
+        // Debug: Bilgi kutucuğunu zorla göster
+        rejectionInfoBox.style.display = 'block';
+        console.log('Bilgi kutucuğu gösterildi. Reddedilen proje sayısı:', rejectedCount);
+      }
+    }
+
+    // Yardımcı fonksiyonlar
+    function getStatusInfo(status) {
+      const statusMap = {
+        'pending': { text: 'Bekliyor', icon: 'fa-clock', color: 'var(--warning-color)' },
+        'approved': { text: 'Onaylandı', icon: 'fa-check-circle', color: 'var(--success-color)' },
+        'rejected': { text: 'Reddedildi', icon: 'fa-times-circle', color: 'var(--danger-color)' }
+      };
+      return statusMap[status] || { text: 'Bekliyor', icon: 'fa-clock', color: 'var(--warning-color)' };
+    }
+    
+    function getStatusClass(status) {
+      const statusMap = {
+        'pending': 'pending',
+        'approved': 'approved',
+        'rejected': 'rejected'
+      };
+      return statusMap[status] || 'pending';
+    }
+    
+    function getInitials(name) {
+      return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase();
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'Belirtilmemiş';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('tr-TR');
+    }
+
+    // Proje silme fonksiyonu
+    async function deleteProject(projectId) {
+      const projectIdNum = parseInt(projectId);
+      const project = userProjects.find(p => p.id == projectIdNum);
+      
+              if (!project) {
+          console.error('Proje bulunamadı:', projectIdNum, 'Mevcut projeler:', userProjects.map(p => ({id: p.id, adi: p.adi})));
+          alert('Proje bulunamadı!');
+          return;
+        }
+
+      // Onay bekleyen projeler dışında silme izni yok
+      if (project.status !== 'pending') {
+        alert('Sadece onay bekleyen projeler silinebilir!');
+        return;
+      }
+
+      // Kullanıcıdan onay iste
+      const confirmMessage = `"${project.adi}" projesini silmek istediğinizden emin misiniz?\n\nBu işlem geri alınamaz!`;
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+
+      try {
+        // API'ye silme isteği gönder
+        const response = await fetch('../../api/projects.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'delete',
+            project_id: projectIdNum
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          // Kullanıcı projelerini yeniden yükle
+          loadUserProjects();
+          alert('Proje başarıyla silindi!');
+        } else {
+          alert('Hata: ' + result.message);
+        }
+      } catch (error) {
+        console.error('Proje silinirken hata:', error);
+        alert('Proje silinirken hata oluştu!');
+      }
+    }
+
+    function showDetailModal(projectId) {
+      currentProjectId = parseInt(projectId);
+      const project = userProjects.find(p => p.id == currentProjectId);
+      
+      if (!project) {
+        console.error('Proje bulunamadı:', projectId, 'Mevcut projeler:', userProjects.map(p => ({id: p.id, adi: p.adi})));
+        return;
+      }
+
+      // Modal title
+      document.getElementById('modalTitle').innerHTML = `
+        <i class="fas fa-folder-open" style="margin-right: 12px; color: white;"></i>
+        Proje Detayları - #${project.id}
+      `;
+
+      // Fill detail fields
+      document.getElementById('detail-sorumlu').textContent = project.sorumlu;
+      document.getElementById('detail-adi').textContent = project.adi;
+      document.getElementById('detail-konu').textContent = project.konu;
+      document.getElementById('detail-baslangic').textContent = formatDate(project.baslangic);
+      document.getElementById('detail-bitis').textContent = formatDate(project.bitis);
+      document.getElementById('detail-sure').textContent = project.sure + ' gün';
+      document.getElementById('detail-anahtar').textContent = project.anahtar;
+      document.getElementById('detail-yonetici').textContent = project.yonetici;
+      document.getElementById('detail-tanim').textContent = project.tanim;
+
+      // Show rejection reason if project is rejected
+      const rejectionContainer = document.getElementById('rejection-reason-container');
+      const rejectionReason = document.getElementById('detail-rejection-reason');
+      
+      if (project.status === 'rejected' && project.rejection_reason) {
+        rejectionContainer.style.display = 'block';
+        rejectionReason.innerHTML = `
+          <i class="fas fa-info-circle" style="font-size: 1.1rem;"></i>
+          <span style="flex: 1;">${project.rejection_reason}</span>
+        `;
+      } else {
+        rejectionContainer.style.display = 'none';
+        rejectionReason.innerHTML = `
+          <i class="fas fa-info-circle" style="font-size: 1.1rem;"></i>
+          <span style="flex: 1;">-</span>
+        `;
+      }
+
+      // Fill file information
+      fillFileInfo(project.dosya);
+
+      // Show detail view
+      document.getElementById('detailView').style.display = 'block';
+      document.getElementById('editView').style.display = 'none';
+      document.getElementById('detailButtons').style.display = 'none';
+      document.getElementById('editButtons').style.display = 'none';
+
+      // Show modal with animation
+      showModal();
+    }
+
+    function showEditModal(projectId) {
+      currentProjectId = parseInt(projectId);
+      const project = userProjects.find(p => p.id == currentProjectId);
+      
+      if (!project) {
+        console.error('Proje bulunamadı:', projectId, 'Mevcut projeler:', userProjects.map(p => ({id: p.id, adi: p.adi})));
+        return;
+      }
+
+      // Modal title
+      document.getElementById('modalTitle').innerHTML = `
+        <i class="fas fa-edit" style="margin-right: 12px; color: white;"></i>
+        Proje Düzenle - #${project.id}
+      `;
+
+      // Fill edit fields
+      document.getElementById('edit-kullanici').value = currentUser || project.creator_name || '';
+      document.getElementById('edit-sorumlu').value = project.sorumlu;
+      document.getElementById('edit-adi').value = project.adi;
+      document.getElementById('edit-konu').value = project.konu;
+      document.getElementById('edit-baslangic').value = project.baslangic;
+      document.getElementById('edit-bitis').value = project.bitis;
+      document.getElementById('edit-sure').value = project.sure;
+      document.getElementById('edit-anahtar').value = project.anahtar;
+      document.getElementById('edit-yonetici').value = project.yonetici;
+      document.getElementById('edit-tanim').value = project.tanim;
+
+      // Show edit view
+      document.getElementById('detailView').style.display = 'none';
+      document.getElementById('editView').style.display = 'block';
+      document.getElementById('detailButtons').style.display = 'none';
+      document.getElementById('editButtons').style.display = 'flex';
+
+      // Show modal with animation
+      showModal();
+    }
+
+    function showModal() {
+      const modal = document.getElementById('projectModal');
+      modal.style.display = 'flex';
+      modal.classList.add('show');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('projectModal');
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+      currentProjectId = null;
+    }
+
+    function cancelEdit() {
+      closeModal();
+    }
+
+    async function saveProject() {
+      if (!currentProjectId) return;
+
+      // Validate required fields
+      const requiredFields = ['edit-kullanici', 'edit-sorumlu', 'edit-adi', 'edit-konu', 'edit-yonetici'];
+      let isValid = true;
+      
+      requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!field.value.trim()) {
+          field.style.borderColor = 'var(--danger-color)';
+          isValid = false;
+        } else {
+          field.style.borderColor = 'var(--gray-200)';
+        }
+      });
+
+      if (!isValid) {
+        alert('Lütfen zorunlu alanları doldurun!');
+        return;
+      }
+
+      // Save button loading state
+      const saveBtn = document.getElementById('saveBtn');
+      const originalText = saveBtn.innerHTML;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Düzenleniyor...';
+      saveBtn.disabled = true;
+
+      try {
+        // Dosya yükleme kontrolü
+        const fileInput = document.getElementById('edit-dosya');
+        let fileData = null;
+        
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          const currentUser = localStorage.getItem('currentUser') || 'Demo Kullanıcı';
+          
+          console.log('Dosya yükleme - Kullanıcı adı:', currentUser);
+          console.log('Dosya adı:', file.name);
+          
+          // FormData oluştur
+          const uploadFormData = new FormData();
+          uploadFormData.append('file', file);
+          uploadFormData.append('username', currentUser);
+          
+          console.log('FormData içeriği:');
+          for (let [key, value] of uploadFormData.entries()) {
+            console.log(key + ': ', value);
+          }
+          
+          // Dosyayı yükle
+          const uploadResponse = await fetch('upload.php', {
+            method: 'POST',
+            body: uploadFormData
+          });
+          
+          console.log('Upload response status:', uploadResponse.status);
+          
+          const uploadResult = await uploadResponse.json();
+          
+          if (uploadResult.success) {
+            fileData = uploadResult.file_info;
+            console.log('Dosya yüklendi:', fileData);
+          } else {
+            alert('Dosya yükleme hatası: ' + uploadResult.error);
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+            return;
+          }
+        }
+        
+        // API'ye gönderilecek veriyi hazırla
+        const updateData = {
+          action: 'update',
+          project_id: currentProjectId,
+          creator_name: document.getElementById('edit-kullanici').value.trim(),
+          title: document.getElementById('edit-adi').value.trim(),
+          subject: document.getElementById('edit-konu').value.trim(),
+          description: document.getElementById('edit-tanim').value.trim(),
+          keywords: document.getElementById('edit-anahtar').value.trim(),
+          project_manager: document.getElementById('edit-yonetici').value.trim(),
+          responsible_person: document.getElementById('edit-sorumlu').value.trim(),
+          start_date: document.getElementById('edit-baslangic').value,
+          end_date: document.getElementById('edit-bitis').value,
+          duration_days: parseInt(document.getElementById('edit-sure').value) || 0,
+          file_info: fileData
+        };
+        
+        console.log('Güncelleme verisi:', updateData);
+        
+        // API'ye güncelleme isteği gönder
+        const response = await fetch('../../api/projects.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updateData)
+        });
+        
+        const result = await response.json();
+        
+        console.log('Güncelleme sonucu:', result);
+        
+        if (result.success) {
+          // Kullanıcı projelerini yeniden yükle
+          loadUserProjects();
+          
+          // Show success message
+          saveBtn.innerHTML = '<i class="fas fa-check"></i>Düzenlendi!';
+          
+          setTimeout(() => {
+            saveBtn.innerHTML = originalText;
+            saveBtn.disabled = false;
+            closeModal();
+          }, 1000);
+        } else {
+          alert('Hata: ' + result.message);
+          saveBtn.innerHTML = originalText;
+          saveBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('Proje güncellenirken hata:', error);
+        alert('Proje güncellenirken hata oluştu!');
+        saveBtn.innerHTML = originalText;
+        saveBtn.disabled = false;
+      }
+    }
+
+    function updateTableRow(projectId, project) {
+      // Find the table row and update project name by matching project name
+      const rows = document.querySelectorAll('tbody tr');
+      rows.forEach((row, index) => {
+        // Since we removed ID column, we'll match by the project data index
+        if ((projectId == 52 && index == 0) || (projectId == 54 && index == 1)) {
+          const nameCell = row.querySelector('td:first-child span');
+          if (nameCell) {
+            nameCell.textContent = project.adi;
+          }
+        }
+      });
+    }
+
+    function fillFileInfo(dosya) {
+      const fileContainer = document.getElementById('detail-dosya');
+      if (dosya && dosya.name) {
+        const fileIcon = getFileIcon(dosya.name);
+        const uploadDate = dosya.uploadDate ? new Date(dosya.uploadDate).toLocaleDateString('tr-TR') : '';
+        
+        fileContainer.innerHTML = `
+          <div class="file-item">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <i class="fas ${fileIcon.icon}" style="font-size: 1.5rem; color: ${fileIcon.color};"></i>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; color: var(--gray-800); margin-bottom: 4px;">
+                  ${dosya.name}
+                </div>
+                <div style="font-size: 0.85rem; color: var(--gray-600);">
+                  ${dosya.type} • ${dosya.size}${uploadDate ? ' • ' + uploadDate : ''}
+                </div>
+              </div>
+              <button onclick="downloadFile('${dosya.name}')" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fas fa-download"></i>
+                İndir
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        fileContainer.innerHTML = '<span style="color: var(--gray-500); font-style: italic;">Dosya yüklenmemiş</span>';
+      }
+    }
+
+    // Dosya tipine göre ikon belirle
+    function getFileIcon(fileName) {
+      const extension = fileName.split('.').pop().toLowerCase();
+      const iconMap = {
+        'pdf': { icon: 'fa-file-pdf', color: '#dc3545' },
+        'doc': { icon: 'fa-file-word', color: '#2b579a' },
+        'docx': { icon: 'fa-file-word', color: '#2b579a' },
+        'xls': { icon: 'fa-file-excel', color: '#217346' },
+        'xlsx': { icon: 'fa-file-excel', color: '#217346' },
+        'ppt': { icon: 'fa-file-powerpoint', color: '#d24726' },
+        'pptx': { icon: 'fa-file-powerpoint', color: '#d24726' },
+        'zip': { icon: 'fa-file-archive', color: '#6c757d' },
+        'rar': { icon: 'fa-file-archive', color: '#6c757d' },
+        'txt': { icon: 'fa-file-alt', color: '#6c757d' },
+        'jpg': { icon: 'fa-file-image', color: '#28a745' },
+        'jpeg': { icon: 'fa-file-image', color: '#28a745' },
+        'png': { icon: 'fa-file-image', color: '#28a745' }
+      };
+      return iconMap[extension] || { icon: 'fa-file', color: '#6c757d' };
+    }
+
+    function downloadFile(fileName) {
+      // Simulated download - gerçek uygulamada dosya sunucudan indirilir
+      alert(`"${fileName}" dosyası indiriliyor...`);
+      
+      // Gerçek download için:
+      // window.location.href = `/download/${fileName}`;
+      
+      // Veya yeni sekmede aç:
+      // window.open(`/files/${fileName}`, '_blank');
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('tr-TR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Close modal on outside click
+    window.onclick = function(event) {
+      const modal = document.getElementById('projectModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
+</body>
+</html> 

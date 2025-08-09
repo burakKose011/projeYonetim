@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Proje Yönetim Sistemi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <style>
+        .admin-header {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 25%, #f87171 50%, #fca5a5 75%, #fed7d7 100%);
+            color: white;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .stat-card.pending {
+            border-left-color: var(--warning-color);
+        }
+        
+        .stat-card.approved {
+            border-left-color: var(--success-color);
+        }
+        
+        .stat-card.rejected {
+            border-left-color: var(--danger-color);
+        }
+        
+        .project-table {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: var(--gray-50);
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+        
+        .project-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            transition: var(--transition);
+        }
+        
+        .project-item:hover {
+            background: var(--gray-50);
+        }
+        
+        .project-item:last-child {
+            border-bottom: none;
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .project-title {
+            font-weight: 600;
+            color: var(--gray-800);
+            font-size: 1.1rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background: rgba(251, 191, 36, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+        
+        .status-approved {
+            background: rgba(34, 197, 94, 0.1);
+            color: #059669;
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+        
+        .status-rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .project-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+        
+        .project-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .approve-btn {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .reject-btn {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .view-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .filter-bar {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        
+        .filter-bar label {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            color: var(--gray-700);
+            white-space: nowrap;
+        }
+        
+
+        
+        .filter-select {
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+        }
+        
+        .compact-search:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray-500);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray-300);
+        }
+
+        /* Date Range Picker Styles */
+        .date-range-picker {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            min-width: 280px;
+            margin-top: 5px;
+        }
+
+        .date-range-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .date-range-header span {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .date-range-content {
+            padding: 16px;
+        }
+
+        .date-input-group {
+            margin-bottom: 12px;
+        }
+
+        .date-input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        .date-input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .date-input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .date-range-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .apply-btn, .clear-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .apply-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .apply-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .clear-btn {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .clear-btn:hover {
+            background: var(--gray-300);
+        }
+
+        /* User Profile Styles */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .profile-simple {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 12px;
+            transition: var(--transition);
+        }
+
+        .profile-simple:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-name {
+            color: var(--gray-600);
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-shadow: none;
+        }
+
+        .profile-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--gray-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid white;
+            transition: var(--transition);
+            box-shadow: 0 6px 18px rgba(107, 114, 128, 0.4);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.08);
+            background: var(--gray-600);
+            box-shadow: 0 8px 25px rgba(107, 114, 128, 0.5);
+        }
+
+        .profile-avatar i {
+            color: white;
+            font-size: 1.3rem;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Dropdown Menu Styles */
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 12px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--gray-200);
+            min-width: 200px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .user-profile:hover .profile-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .profile-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 24px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        .profile-dropdown a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            border-radius: 8px;
+            margin: 4px;
+        }
+
+        .profile-dropdown a:hover {
+            background: var(--gray-50);
+            color: var(--primary-color);
+        }
+
+        .profile-dropdown a i {
+            width: 16px;
+            color: var(--gray-500);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .profile-dropdown a:hover i {
+            color: var(--primary-color);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 8px 12px;
+        }
+
+        .profile-dropdown a:last-child {
+            color: var(--danger-color);
+        }
+
+        .profile-dropdown a:last-child:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .profile-dropdown a:last-child i {
+            color: var(--danger-color);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column !important;
+                gap: 16px !important;
+                align-items: flex-start !important;
+            }
+
+            .header-content > div:first-child {
+                gap: 16px !important;
+            }
+
+            .profile-simple {
+                align-self: flex-end;
+                gap: 12px;
+            }
+
+            .profile-avatar {
+                width: 42px;
+                height: 42px;
+                border: 2px solid white;
+            }
+
+            .profile-avatar i {
+                font-size: 1.1rem;
+            }
+
+            .profile-name {
+                font-size: 1rem;
+                color: var(--gray-600);
+            }
+
+            .filter-bar {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: flex-start;
+            }
+            
+            .filter-bar label {
+                margin: 0;
+                font-size: 0.85rem;
+            }
+            
+            .table-header {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+            }
+            
+            .search-container {
+                width: 100%;
+                justify-content: flex-start !important;
+            }
+            
+            .compact-search {
+                width: 200px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-simple {
+                gap: 10px;
+            }
+
+            .profile-avatar {
+                width: 36px;
+                height: 36px;
+                border: 2px solid white;
+            }
+
+            .profile-avatar i {
+                font-size: 1rem;
+            }
+
+            .profile-name {
+                font-size: 0.95rem;
+                color: var(--gray-600);
+            }
+
+            .profile-dropdown {
+                min-width: 180px;
+                right: -10px;
+            }
+
+            .compact-search {
+                width: 160px !important;
+                font-size: 0.75rem !important;
+            }
+            
+            .keyword-compact {
+                font-size: 0.65rem !important;
+                padding: 1px 4px !important;
+                margin: 0px 1px 0px 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 24px;">
+                <div class="logo-container">
+                    <img src="../../assets/images/uniLogo.png" alt="İskenderun Teknik Üniversitesi" class="logo">
+                    <div class="logo-glow"></div>
+                </div>
+                <div class="header-text">
+                    <h1 class="main-title">Admin Panel - Proje Yönetim Sistemi</h1>
+                    <div class="university-info">
+                        <span class="university-name">İskenderun Teknik Üniversitesi</span>
+                        <span class="faculty-name">Mühendislik ve Doğa Bilimleri Fakültesi</span>
+                        <span class="department-name">Bilgisayar Mühendisliği Bölümü</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="user-profile" id="userProfile">
+                <div class="profile-simple">
+                    <div class="profile-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="profile-name" id="adminName">Admin</div>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="#" onclick="showProfile()">
+                        <i class="fas fa-user"></i>
+                        Profilim
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" onclick="changePassword()">
+                        <i class="fas fa-key"></i>
+                        Şifre Değiştir
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="../auth/login.html" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Çıkış Yap
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="header-decoration"></div>
+    </div>
+
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">
+                    <i class="fas fa-user-shield"></i>
+                    Admin Panel
+                </h3>
+                <p class="sidebar-subtitle">Tüm projeleri yönetin</p>
+            </div>
+            
+            <div class="sidebar-section">
+                <h4 class="sidebar-section-title">Admin Menü</h4>
+                <div class="sidebar-nav">
+                    <a href="admin_dashboard.html" class="active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Ana Panel
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h4 class="sidebar-section-title">Proje Yönetimi</h4>
+                <div class="sidebar-nav">
+                    <a href="#" onclick="filterProjects('pending')">
+                        <i class="fas fa-clock"></i>
+                        Bekleyen Projeler
+                    </a>
+                    <a href="#" onclick="filterProjects('approved')">
+                        <i class="fas fa-check-circle"></i>
+                        Onaylanan Projeler
+                    </a>
+                    <a href="#" onclick="filterProjects('rejected')">
+                        <i class="fas fa-times-circle"></i>
+                        Reddedilen Projeler
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h4 class="sidebar-section-title">Hesap</h4>
+                <div class="sidebar-nav">
+                    <a href="../auth/login.html" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Çıkış
+                    </a>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <p class="sidebar-version">Admin v1.0 - 2025</p>
+            </div>
+        </nav>
+
+        <main class="main-content" id="main-content">
+            <div class="admin-header">
+                <i class="fas fa-user-shield" style="font-size: 2rem;"></i>
+                <div>
+                    <h2 style="margin: 0; font-size: 1.5rem;">Admin Kontrol Paneli</h2>
+                    <p style="margin: 0; opacity: 0.9;">Tüm kullanıcı projelerini görüntüleyin ve yönetin</p>
+                </div>
+            </div>
+
+            <div class="admin-stats" id="statsContainer">
+                <div class="stat-card">
+                    <i class="fas fa-project-diagram" style="font-size: 2rem; color: var(--primary-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="margin: 0; font-size: 1.5rem; color: var(--gray-800);" id="totalProjects">0</h3>
+                    <p style="margin: 0; color: var(--gray-600);">Toplam Proje</p>
+                </div>
+                
+                <div class="stat-card pending">
+                    <i class="fas fa-clock" style="font-size: 2rem; color: var(--warning-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="margin: 0; font-size: 1.5rem; color: var(--gray-800);" id="pendingProjects">0</h3>
+                    <p style="margin: 0; color: var(--gray-600);">Bekleyen</p>
+                </div>
+                
+                <div class="stat-card approved">
+                    <i class="fas fa-check-circle" style="font-size: 2rem; color: var(--success-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="margin: 0; font-size: 1.5rem; color: var(--gray-800);" id="approvedProjects">0</h3>
+                    <p style="margin: 0; color: var(--gray-600);">Onaylanan</p>
+                </div>
+                
+                <div class="stat-card rejected">
+                    <i class="fas fa-times-circle" style="font-size: 2rem; color: var(--danger-color); margin-bottom: 0.5rem;"></i>
+                    <h3 style="margin: 0; font-size: 1.5rem; color: var(--gray-800);" id="rejectedProjects">0</h3>
+                    <p style="margin: 0; color: var(--gray-600);">Reddedilen</p>
+                </div>
+            </div>
+
+
+
+            <div class="filter-bar">
+                <label for="statusFilter">
+                    <i class="fas fa-filter" style="margin-right: 0.5rem;"></i>
+                    Durum:
+                </label>
+                <select id="statusFilter" class="filter-select" onchange="filterProjects(this.value)">
+                    <option value="all">Tümü</option>
+                    <option value="pending">Bekleyen</option>
+                    <option value="approved">Onaylanan</option>
+                    <option value="rejected">Reddedilen</option>
+                </select>
+                
+                <label for="userFilter" style="margin-left: 1rem;">
+                    <i class="fas fa-user" style="margin-right: 0.5rem;"></i>
+                    Kullanıcı:
+                </label>
+                <select id="userFilter" class="filter-select" onchange="filterProjects()">
+                    <option value="all">Tüm Kullanıcılar</option>
+                </select>
+
+                <div class="date-range-container" style="margin-left: 1rem; position: relative; display: inline-flex; align-items: center;">
+                    <label for="dateRangeInput" style="display: flex; align-items: center; margin-right: 0.5rem; margin-bottom: 0;">
+                        <i class="fas fa-calendar" style="margin-right: 0.5rem;"></i>
+                        Tarih Aralığı:
+                    </label>
+                    <input type="text" id="dateRangeInput" class="filter-select" 
+                           placeholder="Tarih aralığı seçin..." 
+                           readonly 
+                           style="width: 200px; cursor: pointer;"
+                           onclick="toggleDateRangePicker()">
+                    
+                    <div id="dateRangePicker" class="date-range-picker" style="display: none;">
+                        <div class="date-range-header">
+                            <span>Tarih Aralığı Seçin</span>
+                            <button onclick="closeDateRangePicker()" class="close-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="date-range-content">
+                            <div class="date-input-group">
+                                <label>Başlangıç:</label>
+                                <input type="date" id="startDateFilter" onchange="updateDateRangeDisplay()">
+                            </div>
+                            <div class="date-input-group">
+                                <label>Bitiş:</label>
+                                <input type="date" id="endDateFilter" onchange="updateDateRangeDisplay()">
+                            </div>
+                            <div class="date-range-actions">
+                                <button onclick="applyDateRange()" class="apply-btn">Uygula</button>
+                                <button onclick="clearDateFilters()" class="clear-btn">Temizle</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="project-table">
+                <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="display: flex; align-items: center;">
+                        <i class="fas fa-list" style="margin-right: 0.5rem;"></i>
+                        <span id="projectListTitle">Proje Listesi</span>
+                    </div>
+                    <div class="search-container" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="position: relative;">
+                            <i class="fas fa-search" style="position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: var(--gray-400); font-size: 0.8rem;"></i>
+                            <input type="text" 
+                                   id="keywordSearch" 
+                                   class="compact-search" 
+                                   placeholder="Arama..." 
+                                   oninput="filterProjects()"
+                                   style="padding: 6px 8px 6px 24px; border: 1px solid var(--gray-300); border-radius: 20px; font-size: 0.8rem; width: 180px; background: var(--gray-50); transition: var(--transition);">
+                        </div>
+                        <button onclick="clearSearch()" 
+                                title="Aramayı temizle"
+                                style="padding: 6px 8px; background: transparent; color: var(--gray-500); border: none; border-radius: 50%; cursor: pointer; font-size: 0.8rem; transition: var(--transition); width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;"
+                                onmouseover="this.style.background='var(--gray-200)'; this.style.color='var(--gray-700)'"
+                                onmouseout="this.style.background='transparent'; this.style.color='var(--gray-500)'">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="projectList">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Henüz proje bulunmuyor</h3>
+                        <p>Kullanıcılar proje eklediğinde burada görünecek.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div>Proje Yönetim Sistemi 2025<br>Admin Panel - İskenderun Teknik Üniversitesi</div>
+    </footer>
+
+    <script>
+        let allProjects = [];
+        let currentFilter = 'all';
+        let currentUserFilter = 'all';
+        let currentKeywordSearch = '';
+
+        // Sayfa yüklendiğinde
+        window.onload = function() {
+            // Admin kontrolü
+            if (localStorage.getItem('userRole') !== 'admin') {
+                alert('Bu sayfaya erişim yetkiniz yok!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('main-content').classList.add('visible');
+            // Projeleri yükle ve diğer işlemleri bekle
+            loadProjects().then(() => {
+                updateStats();
+                loadUsers();
+                loadAdminProfile();
+            });
+        };
+
+        // Admin profil bilgilerini yükle
+        function loadAdminProfile() {
+            // Admin için sabit isim kullan
+            document.getElementById('adminName').textContent = 'Admin';
+        }
+
+        // Şifre değiştir fonksiyonu
+        async function changePassword() {
+            const currentPassword = prompt('Mevcut şifrenizi girin:');
+            if (currentPassword === null) return;
+
+            if (currentPassword === '') {
+                alert('Mevcut şifre boş olamaz!');
+                return;
+            }
+
+            const newPassword = prompt('Yeni şifrenizi girin:');
+            if (newPassword === null) return;
+
+            if (newPassword.length < 6) {
+                alert('Yeni şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+
+            const confirmPassword = prompt('Yeni şifrenizi tekrar girin:');
+            if (confirmPassword === null) return;
+
+            if (newPassword !== confirmPassword) {
+                alert('Şifreler eşleşmiyor! Lütfen tekrar deneyin.');
+                return;
+            }
+
+            try {
+                const response = await fetch('../../api/auth.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'changePassword',
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Şifre başarıyla değiştirildi!');
+                } else {
+                    alert('Hata: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Şifre değiştirme hatası:', error);
+                alert('Sunucuya bağlanılamadı!');
+            }
+        }
+
+
+
+        // Projeleri backend'den yükle
+        async function loadProjects() {
+            try {
+                const response = await fetch('../../api/projects.php?action=list');
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Proje verilerini formatla
+                    allProjects = result.projects.map(project => ({
+                        id: project.id,
+                        adi: project.title,
+                        konu: project.subject,
+                        sorumlu: project.responsible_person,
+                        yonetici: project.project_manager,
+                        baslangic: project.start_date,
+                        bitis: project.end_date,
+                        status: project.status,
+                        ownerUsername: project.creator_name,
+                        tanim: project.description,
+                        anahtar: project.keywords,
+                        dosya: project.file_info,
+                        duration_days: project.duration_days,
+                        created_at: project.created_at,
+                        updated_at: project.updated_at,
+                        approved_at: project.approved_at,
+                        approved_by: project.approved_by,
+                        rejected_at: project.rejected_at,
+                        rejected_by: project.rejected_by,
+                        rejection_reason: project.rejection_reason
+                    }));
+                    
+                    displayProjects(allProjects);
+                    updateFilterInfo(allProjects.length);
+                    updateStats();
+                } else {
+                    console.error('Proje listesi alınamadı:', result.message);
+                    // API'den veri gelmezse boş liste göster
+                    allProjects = [];
+                    displayProjects([]);
+                    updateFilterInfo(0);
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Proje listesi yüklenirken hata:', error);
+                // Hata durumunda boş liste göster
+                allProjects = [];
+                displayProjects([]);
+                updateFilterInfo(0);
+                updateStats();
+            }
+        }
+
+        // Kullanıcıları yükle (filtre için)
+        async function loadUsers() {
+            try {
+                const response = await fetch('../../api/auth.php?action=getallusers');
+                const result = await response.json();
+                
+                const userSelect = document.getElementById('userFilter');
+                
+                if (result.success) {
+                    result.users.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.full_name || user.username;
+                        option.textContent = user.full_name || user.username;
+                        userSelect.appendChild(option);
+                    });
+                } else {
+                    console.error('Kullanıcı listesi alınamadı:', result.message);
+                }
+            } catch (error) {
+                console.error('Kullanıcı listesi yüklenirken hata:', error);
+            }
+        }
+
+        // Projeleri göster
+        function displayProjects(projects) {
+            const container = document.getElementById('projectList');
+            
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Proje bulunamadı</h3>
+                        <p>Seçilen filtrelere uygun proje yok.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = projects.map(project => `
+                <div class="project-item">
+                    <div class="project-header">
+                        <div class="project-title">${project.adi}</div>
+                        <span class="status-badge status-${project.status}">
+                            ${getStatusText(project.status)}
+                        </span>
+                    </div>
+                    
+                    <div class="project-info">
+                        <div><strong>Kullanıcı:</strong> ${project.ownerUsername}</div>
+                        <div><strong>Sorumlu:</strong> ${project.sorumlu}</div>
+                        <div><strong>Yönetici:</strong> ${project.yonetici}</div>
+                        <div><strong>Konu:</strong> ${project.konu}</div>
+                        <div><strong>Başlangıç:</strong> ${formatDate(project.baslangic)}</div>
+                        <div><strong>Bitiş:</strong> ${formatDate(project.bitis)}</div>
+                        <div><strong>Dosya:</strong> ${project.dosya && project.dosya.name ? 
+                            `📎 <a href="#" onclick="downloadProjectFile('${project.dosya.name}', '${project.ownerUsername}', '${project.adi}'); return false;" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">${project.dosya.name}</a> (${project.dosya.size})
+                            <button onclick="downloadProjectFile('${project.dosya.name}', '${project.ownerUsername}', '${project.adi}')" style="margin-left: 8px; background: var(--primary-color); color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">
+                                <i class="fas fa-download"></i>
+                            </button>` : 
+                            '❌ Yüklenmemiş'}</div>
+                        ${project.anahtar ? `
+                        <div><strong>Etiketler:</strong> ${formatKeywordsCompact(project.anahtar)}</div>
+                        ` : ''}
+                    </div>
+                    
+                    <div style="margin: 1rem 0; padding: 1rem; background: var(--gray-50); border-radius: var(--border-radius);">
+                        <strong>Açıklama:</strong><br>
+                        ${project.tanim || 'Açıklama belirtilmemiş'}
+                    </div>
+                    
+                    <div class="project-actions">
+                        ${project.status === 'pending' ? `
+                            <button class="action-btn approve-btn" onclick="approveProject('${project.id}')">
+                                <i class="fas fa-check"></i>
+                                Onayla
+                            </button>
+                            <button class="action-btn reject-btn" onclick="rejectProject('${project.id}')">
+                                <i class="fas fa-times"></i>
+                                Reddet
+                            </button>
+                        ` : ''}
+                        <button class="action-btn view-btn" onclick="viewProjectDetails('${project.id}')">
+                            <i class="fas fa-eye"></i>
+                            Detayları Gör
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // İstatistikleri güncelle
+        function updateStats() {
+            document.getElementById('totalProjects').textContent = allProjects.length;
+            document.getElementById('pendingProjects').textContent = allProjects.filter(p => p.status === 'pending').length;
+            document.getElementById('approvedProjects').textContent = allProjects.filter(p => p.status === 'approved').length;
+            document.getElementById('rejectedProjects').textContent = allProjects.filter(p => p.status === 'rejected').length;
+        }
+
+        // Proje onayla
+        async function approveProject(projectId) {
+            if (confirm('Bu projeyi onaylamak istediğinizden emin misiniz?')) {
+                try {
+                    const response = await fetch('../../api/projects.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'approve',
+                            id: projectId
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('Proje başarıyla onaylandı!');
+                        await loadProjects(); // Projeleri yeniden yükle
+                    } else {
+                        alert('Hata: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Proje onaylanırken hata:', error);
+                    alert('Proje onaylanırken hata oluştu!');
+                }
+            }
+        }
+
+        // Proje reddet
+        async function rejectProject(projectId) {
+            console.log('rejectProject çağrıldı, projectId:', projectId);
+            
+            try {
+                // Projeler yüklenmemişse önce yükle
+                if (!allProjects || allProjects.length === 0) {
+                    console.log('Projeler yükleniyor...');
+                    await loadProjects();
+                }
+                
+                // Modern modal ile reddetme sebebi al
+                showModernRejectModal(projectId);
+            } catch (error) {
+                console.error('Reddetme işlemi sırasında hata:', error);
+                alert('Proje reddedilirken hata oluştu!');
+            }
+        }
+
+        // Modern reddetme modal'ı
+        function showModernRejectModal(projectId) {
+            // Modal overlay oluştur
+            const overlay = document.createElement('div');
+            overlay.id = 'rejectModalOverlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.4);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+            `;
+            
+            // Modal içeriği
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: white;
+                border-radius: 12px;
+                padding: 24px;
+                max-width: 400px;
+                width: 90%;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+                animation: slideIn 0.2s ease;
+            `;
+            
+            modal.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h3 style="margin: 0 0 8px 0; color: var(--gray-800); font-size: 1.1rem; font-weight: 600;">Proje Reddet</h3>
+                    <p style="margin: 0; color: var(--gray-600); font-size: 0.9rem;">Reddetme sebebi belirtmek isteğe bağlıdır.</p>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <textarea 
+                        id="rejectReasonInput" 
+                        placeholder="Reddetme sebebini yazın..."
+                        style="width: 100%; min-height: 80px; padding: 12px; border: 1px solid var(--gray-300); border-radius: 8px; font-family: inherit; font-size: 0.9rem; resize: none; outline: none; transition: border-color 0.2s ease;"
+                        onfocus="this.style.borderColor='var(--danger-color)'"
+                        onblur="this.style.borderColor='var(--gray-300)'"
+                    ></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                    <button onclick="closeModernRejectModal()" style="padding: 8px 16px; background: var(--gray-200); color: var(--gray-700); border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.2s ease; font-size: 0.9rem;">
+                        İptal
+                    </button>
+                    <button onclick="confirmModernReject(${projectId})" style="padding: 8px 16px; background: var(--danger-color); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 500; transition: all 0.2s ease; font-size: 0.9rem;">
+                        Reddet
+                    </button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Textarea'ya odaklan
+            setTimeout(() => {
+                const textarea = document.getElementById('rejectReasonInput');
+                if (textarea) textarea.focus();
+            }, 100);
+        }
+
+        // Modern modal'ı kapat
+        function closeModernRejectModal() {
+            const overlay = document.getElementById('rejectModalOverlay');
+            if (overlay) {
+                overlay.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(overlay);
+                }, 300);
+            }
+        }
+
+        // Modern reddetme işlemini onayla
+        async function confirmModernReject(projectId) {
+            const reason = document.getElementById('rejectReasonInput').value.trim();
+            
+            try {
+                const response = await fetch('../../api/projects.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'reject',
+                        id: projectId,
+                        reason: reason
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    closeModernRejectModal();
+                    showSuccessMessage('Proje başarıyla reddedildi!');
+                    loadProjects(); // Projeleri yeniden yükle
+                } else {
+                    alert('Hata: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Proje reddedilirken hata:', error);
+                alert('Proje reddedilirken hata oluştu!');
+            }
+        }
+
+                // Reddetme modal'ını göster
+        function showRejectModal(projectId) {
+            console.log('showRejectModal çağrıldı, projectId:', projectId);
+            console.log('allProjects:', allProjects);
+            
+            try {
+                if (!allProjects || allProjects.length === 0) {
+                    console.error('Projeler henüz yüklenmemiş!');
+                    alert('Projeler yükleniyor, lütfen tekrar deneyin.');
+                    return;
+                }
+                
+                const project = allProjects.find(p => String(p.id) === String(projectId));
+                if (!project) {
+                    console.error('Proje bulunamadı:', projectId);
+                    console.log('Mevcut projeler:', allProjects.map(p => ({id: p.id, adi: p.adi})));
+                    alert('Proje bulunamadı!');
+                    return;
+                }
+                console.log('Proje bulundu:', project);
+
+                // Modal başlığını güncelle
+                const modalTitle = document.getElementById('modalTitle');
+                if (modalTitle) {
+                    modalTitle.textContent = `Proje Reddet - ${project.adi}`;
+                }
+                
+                // Modal içeriğini oluştur
+                const modalBody = document.getElementById('modalBody');
+                if (modalBody) {
+                    modalBody.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <p style="color: var(--danger-color); font-weight: 600; margin-bottom: 10px;">
+                                <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                                Bu projeyi reddetmek istediğinizden emin misiniz?
+                            </p>
+                            <p style="color: var(--gray-600); font-size: 0.9rem;">
+                                Reddetme sebebi belirtmek, proje sahibinin projeyi iyileştirmesine yardımcı olacaktır.
+                            </p>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label for="rejectReason" style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--gray-700);">
+                                <i class="fas fa-comment" style="margin-right: 6px; color: var(--danger-color);"></i>
+                                Reddetme Sebebi:
+                            </label>
+                            <textarea 
+                                id="rejectReason" 
+                                placeholder="Reddetme sebebini buraya yazın (isteğe bağlı)..."
+                                style="width: 100%; min-height: 100px; padding: 12px; border: 2px solid var(--gray-300); border-radius: 12px; font-family: inherit; font-size: 0.9rem; resize: vertical;"
+                            ></textarea>
+                        </div>
+                        
+                        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                            <button onclick="closeRejectModal()" style="padding: 12px 24px; background: var(--gray-400); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-times" style="margin-right: 6px;"></i>
+                                İptal
+                            </button>
+                            <button onclick="confirmRejectProject(${projectId})" style="padding: 12px 24px; background: var(--danger-color); color: white; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
+                                <i class="fas fa-times-circle" style="margin-right: 6px;"></i>
+                                Projeyi Reddet
+                            </button>
+                        </div>
+                    `;
+                }
+                
+                // Modal'ı göster
+                console.log('Reddetme modal gösteriliyor...');
+                showRejectModalOnly();
+                console.log('Reddetme modal gösterildi');
+                
+                // Modal açıldıktan sonra diğer butonları geçici olarak devre dışı bırak
+                setTimeout(() => {
+                    console.log('Diğer butonlar geçici olarak devre dışı bırakılıyor...');
+                    const otherButtons = document.querySelectorAll('button:not([onclick*="closeRejectModal"]):not([onclick*="confirmRejectProject"])');
+                    otherButtons.forEach(btn => {
+                        btn.style.pointerEvents = 'none';
+                        btn.style.opacity = '0.5';
+                    });
+                    
+                    // 1 saniye sonra butonları tekrar aktif hale getir
+                    setTimeout(() => {
+                        otherButtons.forEach(btn => {
+                            btn.style.pointerEvents = 'auto';
+                            btn.style.opacity = '1';
+                        });
+                        console.log('Butonlar tekrar aktif hale getirildi');
+                    }, 1000);
+                }, 100);
+            } catch (error) {
+                console.error('Modal gösterme hatası:', error);
+                alert('Modal açılırken hata oluştu. Lütfen tekrar deneyin.');
+            }
+        }
+
+        // Proje reddetme işlemini onayla
+        async function confirmRejectProject(projectId) {
+            const reason = document.getElementById('rejectReason').value.trim();
+            
+            try {
+                const response = await fetch('../../api/projects.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'reject',
+                        id: projectId,
+                        reason: reason
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Başarı mesajı göster
+                    showSuccessMessage('Proje başarıyla reddedildi!');
+                    closeRejectModal();
+                    loadProjects(); // Projeleri yeniden yükle
+                } else {
+                    showErrorMessage('Hata: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Proje reddedilirken hata:', error);
+                showErrorMessage('Proje reddedilirken hata oluştu!');
+            }
+        }
+
+                        // Proje detaylarını gör
+        function viewProjectDetails(projectId) {
+            const project = allProjects.find(p => String(p.id) === String(projectId));
+            if (project) {
+                // Modal başlığını güncelle
+                document.getElementById('modalTitle').textContent = `Proje Detayları - ${project.adi}`;
+                
+                // Modal içeriğini oluştur
+                const modalBody = document.getElementById('modalBody');
+                modalBody.innerHTML = `
+                    <div class="project-detail-grid">
+                        <div class="project-detail-item">
+                            <h4>Proje Adı</h4>
+                            <p>${project.adi}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Durum</h4>
+                            <p><span class="status-badge-modal ${project.status}">${getStatusText(project.status)}</span></p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Sorumlu Kişi</h4>
+                            <p>${project.sorumlu}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Proje Yöneticisi</h4>
+                            <p>${project.yonetici}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Kullanıcı</h4>
+                            <p>${project.ownerUsername}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Konu</h4>
+                            <p>${project.konu}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Başlangıç Tarihi</h4>
+                            <p>${formatDate(project.baslangic)}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Bitiş Tarihi</h4>
+                            <p>${formatDate(project.bitis)}</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Süre</h4>
+                            <p>${project.duration_days || 0} gün</p>
+                        </div>
+                        <div class="project-detail-item">
+                            <h4>Anahtar Kelimeler</h4>
+                            <p>${project.anahtar || 'Belirtilmemiş'}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="project-description">
+                        <h4>Proje Açıklaması</h4>
+                        <p>${project.tanim || 'Açıklama belirtilmemiş'}</p>
+                    </div>
+                    
+                    <div class="file-info ${project.dosya && project.dosya.name ? '' : 'no-file'}">
+                        <i class="fas ${project.dosya && project.dosya.name ? 'fa-file-alt' : 'fa-times-circle'}"></i>
+                        <div class="file-details">
+                            <h4>${project.dosya && project.dosya.name ? 'Proje Dosyası' : 'Dosya Yüklenmemiş'}</h4>
+                            ${project.dosya && project.dosya.name ? 
+                                `<p>
+                                    <a href="/uploads/${project.ownerUsername}/${project.dosya.name}" download style="color: var(--primary-color); font-weight: 600; text-decoration: underline;" target="_blank">
+                                        ${project.dosya.name}
+                                    </a> • ${project.dosya.type} • ${project.dosya.size}<br>Yükleme: ${formatDate(project.dosya.uploadDate)}
+                                </p>` : 
+                                '<p>Bu proje için henüz dosya yüklenmemiş.</p>'
+                            }
+                        </div>
+                    </div>
+                    ${project.created_at ? `
+                    <div class="project-detail-item">
+                        <h4>Oluşturulma Tarihi</h4>
+                        <p>${formatDate(project.created_at)}</p>
+                    </div>
+                    ` : ''}
+                    ${project.updated_at ? `
+                    <div class="project-detail-item">
+                        <h4>Güncellenme Tarihi</h4>
+                        <p>${formatDate(project.updated_at)}</p>
+                    </div>
+                    ` : ''}
+                    ${project.approved_at ? `
+                    <div class="project-detail-item">
+                        <h4>Onaylanma Tarihi</h4>
+                        <p>${formatDate(project.approved_at)}</p>
+                    </div>
+                    <div class="project-detail-item">
+                        <h4>Onaylayan</h4>
+                        <p>${project.approved_by || 'Admin'}</p>
+                    </div>
+                    ` : ''}
+                    ${project.rejected_at ? `
+                    <div class="project-detail-item">
+                        <h4>Reddetilme Tarihi</h4>
+                        <p>${formatDate(project.rejected_at)}</p>
+                    </div>
+                    <div class="project-detail-item">
+                        <h4>Reddeden</h4>
+                        <p>${project.rejected_by || 'Admin'}</p>
+                    </div>
+                    ${project.rejection_reason ? `
+                    <div class="project-detail-item">
+                        <h4>Reddetme Sebebi</h4>
+                        <p>${project.rejection_reason}</p>
+                    </div>
+                    ` : ''}
+                    ` : ''}
+                `;
+                
+                // Dosya indirme butonunu göster/gizle
+                const downloadBtn = document.getElementById('downloadBtn');
+                if (project.dosya && project.dosya.name) {
+                    downloadBtn.style.display = 'inline-flex';
+                    downloadBtn.onclick = () => downloadProjectFile(project.dosya.name, project.ownerUsername, project.adi);
+                } else {
+                    downloadBtn.style.display = 'none';
+                }
+                
+                // Modal'ı göster
+                const modal = document.getElementById('projectDetailModal');
+                modal.style.display = 'block';
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                modal.style.zIndex = '99999';
+            }
+        }
+
+        // Modal kapatma fonksiyonu
+        function closeProjectModal() {
+            const modal = document.getElementById('projectDetailModal');
+            modal.style.display = 'none';
+            modal.style.opacity = '';
+            modal.style.visibility = '';
+            modal.style.zIndex = '';
+        }
+        
+        // Dosya indirme fonksiyonu
+        function downloadProjectFile(fileName, ownerUsername, projectName) {
+            try {
+                // Dosya indirme endpoint'ini kullan
+                const downloadUrl = `download.php?username=${encodeURIComponent(ownerUsername)}&filename=${encodeURIComponent(fileName)}`;
+                
+                // Dosyayı indir
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = fileName;
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
+                console.log(`Dosya indiriliyor: ${fileName} - Kullanıcı: ${ownerUsername}`);
+                
+            } catch (error) {
+                console.error('Dosya indirme hatası:', error);
+                alert(`Dosya indirme hatası: ${fileName}\n\nHata: ${error.message}`);
+            }
+        }
+        
+        // Mevcut dosyayı indir
+        function downloadCurrentFile() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn.onclick) {
+                downloadBtn.onclick();
+            }
+        }
+
+        // Tarih aralığı picker fonksiyonları
+        function toggleDateRangePicker() {
+            const picker = document.getElementById('dateRangePicker');
+            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function closeDateRangePicker() {
+            document.getElementById('dateRangePicker').style.display = 'none';
+        }
+
+        function updateDateRangeDisplay() {
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+            const displayInput = document.getElementById('dateRangeInput');
+            
+            if (startDate && endDate) {
+                displayInput.value = `${startDate} - ${endDate}`;
+            } else if (startDate) {
+                displayInput.value = `${startDate} - ...`;
+            } else if (endDate) {
+                displayInput.value = `... - ${endDate}`;
+            } else {
+                displayInput.value = '';
+            }
+        }
+
+        function applyDateRange() {
+            filterProjects();
+            closeDateRangePicker();
+        }
+
+        // Tarih filtrelerini temizle
+        function clearDateFilters() {
+            document.getElementById('startDateFilter').value = '';
+            document.getElementById('endDateFilter').value = '';
+            document.getElementById('dateRangeInput').value = '';
+            filterProjects();
+            closeDateRangePicker();
+        }
+
+        // Projeleri filtrele
+        function filterProjects(status = null) {
+            if (status) {
+                currentFilter = status;
+                document.getElementById('statusFilter').value = status;
+            } else {
+                currentFilter = document.getElementById('statusFilter').value;
+            }
+            
+            currentUserFilter = document.getElementById('userFilter').value;
+            currentKeywordSearch = document.getElementById('keywordSearch').value.toLowerCase().trim();
+            
+            // Tarih filtreleri
+            const startDateFilter = document.getElementById('startDateFilter').value;
+            const endDateFilter = document.getElementById('endDateFilter').value;
+            
+
+            
+            let filteredProjects = allProjects;
+            
+            // Durum filtresi
+            if (currentFilter !== 'all') {
+                filteredProjects = filteredProjects.filter(p => p.status === currentFilter);
+            }
+            
+            // Kullanıcı filtresi
+            if (currentUserFilter !== 'all') {
+                filteredProjects = filteredProjects.filter(p => p.ownerUsername === currentUserFilter);
+            }
+            
+            // Tarih filtreleri
+            if (startDateFilter) {
+                const startDate = new Date(startDateFilter);
+                filteredProjects = filteredProjects.filter(p => {
+                    if (!p.created_at) return false;
+                    const projectDate = new Date(p.created_at);
+                    return projectDate >= startDate;
+                });
+            }
+
+            if (endDateFilter) {
+                const endDate = new Date(endDateFilter);
+                filteredProjects = filteredProjects.filter(p => {
+                    if (!p.created_at) return false;
+                    const projectDate = new Date(p.created_at);
+                    return projectDate <= endDate;
+                });
+            }
+            
+
+            
+            // Anahtar kelime araması
+            if (currentKeywordSearch) {
+                filteredProjects = filteredProjects.filter(p => {
+                    const searchableText = [
+                        p.adi || '',
+                        p.konu || '',
+                        p.anahtar || '',
+                        p.tanim || '',
+                        p.sorumlu || '',
+                        p.yonetici || '',
+                        p.ownerUsername || ''
+                    ].join(' ').toLowerCase();
+                    
+                    return searchableText.includes(currentKeywordSearch);
+                });
+            }
+            
+            displayProjects(filteredProjects);
+            updateFilterInfo(filteredProjects.length);
+        }
+
+        // Arama temizle
+        function clearSearch() {
+            document.getElementById('keywordSearch').value = '';
+            currentKeywordSearch = '';
+            filterProjects();
+        }
+
+
+
+        // Filtre bilgisini güncelle
+        function updateFilterInfo(count) {
+            const titleElement = document.getElementById('projectListTitle');
+            const totalProjects = allProjects.length;
+            
+            if (count === totalProjects) {
+                titleElement.textContent = `Proje Listesi (${totalProjects})`;
+            } else {
+                titleElement.textContent = `Proje Listesi (${count}/${totalProjects})`;
+            }
+        }
+
+        // Yardımcı fonksiyonlar
+        function getStatusText(status) {
+            const statusMap = {
+                'pending': 'Bekliyor',
+                'approved': 'Onaylandı',
+                'rejected': 'Reddedildi'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'Belirtilmemiş';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('tr-TR');
+        }
+
+        function formatKeywords(keywords) {
+            if (!keywords) return 'Belirtilmemiş';
+            
+            return keywords.split(',')
+                .map(keyword => keyword.trim())
+                .filter(keyword => keyword.length > 0)
+                .map(keyword => `
+                    <span class="keyword-tag" 
+                          onclick="searchKeyword('${keyword.trim()}')"
+                          style="display: inline-block; 
+                                 background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); 
+                                 color: white; 
+                                 padding: 4px 12px; 
+                                 margin: 2px 4px 2px 0; 
+                                 border-radius: 20px; 
+                                 font-size: 0.8rem; 
+                                 font-weight: 500; 
+                                 cursor: pointer; 
+                                 transition: var(--transition);
+                                 box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);"
+                          onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 4px 8px rgba(102, 126, 234, 0.3)'"
+                          onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(102, 126, 234, 0.2)'"
+                          title="Bu kelimeyi arayın: ${keyword.trim()}">
+                        <i class="fas fa-tag" style="margin-right: 4px; font-size: 0.7rem;"></i>
+                        ${keyword.trim()}
+                    </span>
+                `).join('');
+        }
+
+        function formatKeywordsCompact(keywords) {
+            if (!keywords) return 'Yok';
+            
+            return keywords.split(',')
+                .map(keyword => keyword.trim())
+                .filter(keyword => keyword.length > 0)
+                .slice(0, 5) // Maksimum 5 etiket göster
+                .map(keyword => `
+                    <span class="keyword-compact" 
+                          onclick="searchKeyword('${keyword.trim()}')"
+                          style="display: inline-block; 
+                                 background: var(--primary-color); 
+                                 color: white; 
+                                 padding: 2px 6px; 
+                                 margin: 1px 2px 1px 0; 
+                                 border-radius: 10px; 
+                                 font-size: 0.7rem; 
+                                 font-weight: 500; 
+                                 cursor: pointer; 
+                                 transition: var(--transition);
+                                 opacity: 0.8;"
+                          onmouseover="this.style.opacity='1'; this.style.transform='scale(1.05)'"
+                          onmouseout="this.style.opacity='0.8'; this.style.transform='scale(1)'"
+                          title="Ara: ${keyword.trim()}">
+                        ${keyword.trim()}
+                    </span>
+                `).join('') + (keywords.split(',').length > 5 ? `
+                    <span style="font-size: 0.7rem; color: var(--gray-500); margin-left: 4px;">
+                        +${keywords.split(',').length - 5} daha
+                    </span>
+                ` : '');
+        }
+
+        // Anahtar kelimeye tıklayınca arama yap
+        function searchKeyword(keyword) {
+            const searchInput = document.getElementById('keywordSearch');
+            searchInput.value = keyword;
+            searchInput.focus();
+            filterProjects();
+        }
+
+        // Admin için dosya indirme fonksiyonu
+        function downloadProjectFile(fileName, ownerUsername, projectName) {
+            // Dosya indirme simülasyonu
+            const confirmDownload = confirm(`Dosya İndirme\n\nProje: ${projectName}\nKullanıcı: ${ownerUsername}\nDosya: ${fileName}\n\nBu dosyayı indirmek istediğinizden emin misiniz?`);
+            
+            if (confirmDownload) {
+                // Gerçek uygulamada dosya sunucudan indirilir
+                // Simülasyon için download işlemi gösteriliyor
+                const downloadStatus = document.createElement('div');
+                downloadStatus.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, var(--success-color), #38a169);
+                    color: white;
+                    padding: 16px 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    font-weight: 600;
+                `;
+                downloadStatus.innerHTML = `
+                    <i class="fas fa-download" style="margin-right: 8px;"></i>
+                    "${fileName}" indiriliyor...
+                `;
+                document.body.appendChild(downloadStatus);
+                
+                // 3 saniye sonra mesajı kaldır
+                setTimeout(() => {
+                    downloadStatus.innerHTML = `
+                        <i class="fas fa-check" style="margin-right: 8px;"></i>
+                        "${fileName}" indirildi!
+                    `;
+                    setTimeout(() => {
+                        document.body.removeChild(downloadStatus);
+                    }, 2000);
+                }, 2000);
+                
+                // Gerçek implementasyon için:
+                // window.location.href = `/admin/download/${ownerUsername}/${fileName}`;
+                // veya
+                // fetch(`/api/admin/download/${ownerUsername}/${fileName}`)
+                //   .then(response => response.blob())
+                //   .then(blob => {
+                //     const url = window.URL.createObjectURL(blob);
+                //     const a = document.createElement('a');
+                //     a.href = url;
+                //     a.download = fileName;
+                //     a.click();
+                //   });
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+        }
+
+        // Demo projeler ekle (test için)
+        function addDemoProjects() {
+            const demoProjects = [
+                {
+                    id: Date.now() + '_demo1',
+                    ownerUsername: 'demo',
+                    status: 'pending',
+                    sorumlu: 'Dr. Ahmet Yılmaz',
+                    adi: 'Makine Öğrenmesi ile Hastalık Teşhisi',
+                    konu: 'Yapay Zeka',
+                    baslangic: '2025-01-15',
+                    bitis: '2025-06-15',
+                    sure: 150,
+                    anahtar: 'makine öğrenmesi, teşhis, sağlık, AI, yapay zeka, hastalık, algoritma, medikal',
+                    yonetici: 'Prof. Dr. Mehmet Kaya',
+                    tanim: 'Bu proje, makine öğrenmesi algoritmaları kullanarak hastalık teşhis sistemi geliştirmeyi amaçlamaktadır.',
+                    dosya: {
+                        ad: 'Makine_Ogrenmesi_Proje_Raporu.pdf',
+                        boyut: '3.2 MB',
+                        tip: 'PDF Dosyası',
+                        uploadDate: new Date().toISOString()
+                    },
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: Date.now() + '_demo2',
+                    ownerUsername: 'demo',
+                    status: 'approved',
+                    sorumlu: 'Dr. Fatma Demir',
+                    adi: 'Akıllı Şehir IoT Sensör Ağı',
+                    konu: 'IoT',
+                    baslangic: '2024-09-01',
+                    bitis: '2025-03-01',
+                    sure: 180,
+                    anahtar: 'IoT, akıllı şehir, sensör, ağ, nesnelerin interneti, smart city, wireless, teknoloji',
+                    yonetici: 'Dr. Ali Özkan',
+                    tanim: 'Şehir genelinde IoT sensörler kurarak akıllı şehir altyapısı oluşturma projesi.',
+                    dosya: {
+                        ad: 'Akilli_Sehir_IoT_Tasarim_Dokumani.docx',
+                        boyut: '5.7 MB',
+                        tip: 'Word Belgesi',
+                        uploadDate: new Date(Date.now() - 86400000).toISOString()
+                    },
+                    createdAt: new Date(Date.now() - 86400000).toISOString(),
+                    approvedAt: new Date().toISOString(),
+                    approvedBy: 'admin'
+                },
+                {
+                    id: Date.now() + '_demo3',
+                    ownerUsername: 'test_user',
+                    status: 'pending',
+                    sorumlu: 'Dr. Zeynep Kara',
+                    adi: 'Blockchain Tabanlı Güvenli Veri Paylaşımı',
+                    konu: 'Blockchain',
+                    baslangic: '2025-02-01',
+                    bitis: '2025-08-01',
+                    sure: 180,
+                    anahtar: 'blockchain, güvenlik, veri, kripto, distributed ledger, bitcoin, ethereum, smart contract',
+                    yonetici: 'Prof. Dr. Can Özdemir',
+                    tanim: 'Blockchain teknolojisi kullanarak güvenli veri paylaşım platformu geliştirme projesi.',
+                    dosya: {
+                        ad: 'Blockchain_Guvenlik_Projesi.pdf',
+                        boyut: '2.8 MB',
+                        tip: 'PDF Dosyası',
+                        uploadDate: new Date(Date.now() - 172800000).toISOString()
+                    },
+                    createdAt: new Date(Date.now() - 172800000).toISOString()
+                },
+                {
+                    id: Date.now() + '_demo4',
+                    ownerUsername: 'researcher',
+                    status: 'approved',
+                    sorumlu: 'Dr. Murat Aydın',
+                    adi: 'Mobil Uygulama Geliştirme ve UI/UX Tasarımı',
+                    konu: 'Mobil Geliştirme',
+                    baslangic: '2024-10-15',
+                    bitis: '2025-04-15',
+                    sure: 180,
+                    anahtar: 'mobil, uygulama, UI, UX, tasarım, react native, flutter, android, ios',
+                    yonetici: 'Dr. Elif Yılmaz',
+                    tanim: 'Kullanıcı deneyimi odaklı mobil uygulama geliştirme ve modern UI/UX tasarım prensipleri projesi.',
+                    dosya: {
+                        ad: 'Mobil_UX_Tasarim_Dokumani.sketch',
+                        boyut: '12.5 MB',
+                        tip: 'Sketch Dosyası',
+                        uploadDate: new Date(Date.now() - 259200000).toISOString()
+                    },
+                    createdAt: new Date(Date.now() - 259200000).toISOString(),
+                    approvedAt: new Date(Date.now() - 86400000).toISOString(),
+                    approvedBy: 'admin'
+                }
+            ];
+            
+            const existingProjects = JSON.parse(localStorage.getItem('projects') || '[]');
+            const updatedProjects = [...existingProjects, ...demoProjects];
+            localStorage.setItem('projects', JSON.stringify(updatedProjects));
+            
+            loadProjects();
+            updateStats();
+        }
+
+        // Sayfa yüklendiğinde demo projeler yoksa ekle
+        setTimeout(() => {
+            const projects = JSON.parse(localStorage.getItem('projects') || '[]');
+            if (projects.length === 0) {
+                addDemoProjects();
+            }
+        }, 1000);
+
+        // Admin profil yönetimi
+        let adminProfile = JSON.parse(localStorage.getItem('adminProfile') || JSON.stringify({
+            username: 'admin',
+            password: 'admin123',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        }));
+
+        // Profil modal'ını göster
+        function showProfile() {
+            fetch('../../api/auth.php?action=getAdminInfo')
+                .then(res => res.json())
+                .then(data => {
+                    console.log('getAdminInfo yanıtı:', data);
+                    if (data.success && data.admin) {
+                        populateProfileForm(data.admin);
+                        const modal = document.getElementById('profileModal');
+                        modal.style.display = 'block';
+                        modal.style.opacity = '1';
+                        modal.style.visibility = 'visible';
+                        modal.style.zIndex = '99999';
+                    } else {
+                        alert(data.message || 'Admin bilgileri alınamadı!');
+                    }
+                })
+                .catch((err) => { console.error('getAdminInfo fetch error:', err); alert('Sunucuya bağlanılamadı!') });
+        }
+
+        // Profil modal'ını kapat  
+        function closeProfile() {
+            const modal = document.getElementById('profileModal');
+            modal.style.display = 'none';
+            modal.style.opacity = '';
+            modal.style.visibility = '';
+            modal.style.zIndex = '';
+        }
+
+        // Profil formunu doldur
+        function populateProfileForm(admin) {
+            document.getElementById('profileUsername').value = admin.username || '';
+            document.getElementById('profilePassword').value = '';
+            document.getElementById('profileEmail').value = admin.email || '';
+            document.getElementById('profileFullName').value = admin.full_name || '';
+            document.getElementById('profileTitle').value = admin.title || '';
+            document.getElementById('profileDepartment').value = admin.department || '';
+            document.getElementById('profileEmployeeId').value = admin.employee_id || '';
+            document.getElementById('profilePhone').value = admin.phone || '';
+            document.getElementById('profileDisplayName').textContent = 'Admin';
+        }
+
+        // Profil bilgilerini kaydet
+        function saveProfile() {
+            const data = {
+                username: document.getElementById('profileUsername').value,
+                password: document.getElementById('profilePassword').value,
+                email: document.getElementById('profileEmail').value,
+                full_name: document.getElementById('profileFullName').value,
+                title: document.getElementById('profileTitle').value,
+                department: document.getElementById('profileDepartment').value,
+                employee_id: document.getElementById('profileEmployeeId').value,
+                phone: document.getElementById('profilePhone').value
+            };
+            fetch('../../api/auth.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'updateAdminInfo', ...data })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Profil bilgileriniz başarıyla güncellendi!');
+                    closeProfile();
+                    // Header'daki admin ismini sabit tut
+                    document.getElementById('adminName').textContent = 'Admin';
+                } else {
+                    alert(result.message || 'Güncelleme başarısız!');
+                }
+            })
+            .catch(() => alert('Sunucuya bağlanılamadı!'));
+        }
+
+        // Profil düzenleme modunu aç/kapat
+        function toggleEditProfile() {
+            const inputs = document.querySelectorAll('.profile-input');
+            const editBtn = document.getElementById('editProfileBtn');
+            const saveBtn = document.getElementById('saveProfileBtn');
+            const cancelBtn = document.getElementById('cancelProfileBtn');
+            const togglePasswordBtn = document.querySelector('.toggle-password');
+            
+            const isEditMode = !inputs[0].disabled;
+            
+            if (isEditMode) {
+                // Düzenleme modunu kapat
+                inputs.forEach(input => input.disabled = true);
+                togglePasswordBtn.disabled = true;
+                editBtn.style.display = 'inline-flex';
+                saveBtn.style.display = 'none';
+                cancelBtn.style.display = 'none';
+                populateProfileForm(); // Değişiklikleri iptal et
+            } else {
+                // Düzenleme modunu aç
+                inputs.forEach(input => input.disabled = false);
+                togglePasswordBtn.disabled = false;
+                editBtn.style.display = 'none';
+                saveBtn.style.display = 'inline-flex';
+                cancelBtn.style.display = 'inline-flex';
+            }
+        }
+
+        // Şifre görünürlüğünü değiştir
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('profilePassword');
+            const toggleIcon = document.querySelector('.toggle-password i');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+
+        // Sayfa yüklendiğinde admin ismini sabit tut
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('adminName').textContent = 'Admin';
+            
+            // Dışarı tıklandığında date range picker'ı kapat
+            document.addEventListener('click', function(event) {
+                const picker = document.getElementById('dateRangePicker');
+                const container = document.querySelector('.date-range-container');
+                
+                if (picker && picker.style.display === 'block') {
+                    if (!container.contains(event.target)) {
+                        closeDateRangePicker();
+                    }
+                }
+            });
+        });
+
+        // Çıkış yaparken son giriş tarihini güncelle
+        function logout() {
+            adminProfile.lastLogin = new Date().toISOString();
+            localStorage.setItem('adminProfile', JSON.stringify(adminProfile));
+            
+            localStorage.removeItem('userLoggedIn');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+        }
+    </script>
+
+    <!-- Admin Profil Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-user-circle"></i>
+                    Admin Profili
+                </h3>
+                <span class="close" onclick="closeProfile()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <!-- Profil Kartı -->
+                <div class="profile-card">
+                    <div class="profile-avatar-large">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h4 id="profileDisplayName">Admin</h4>
+                        <p>Sistem Yöneticisi</p>
+                    </div>
+                </div>
+                <!-- Giriş Bilgileri -->
+                <div class="profile-section">
+                    <h4 style="margin-bottom: 20px; color: var(--primary-color); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-key"></i>
+                        Giriş Bilgileri
+                    </h4>
+                    <div class="profile-fields">
+                        <div class="profile-field">
+                            <label>Kullanıcı Adı</label>
+                            <input type="text" id="profileUsername" class="profile-input" disabled>
+                        </div>
+                        <div class="profile-field">
+                            <label>Şifre (değiştirmek için doldurun)</label>
+                            <div class="password-field">
+                                <input type="password" id="profilePassword" class="profile-input">
+                                <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="profile-field">
+                            <label>E-posta</label>
+                            <input type="email" id="profileEmail" class="profile-input">
+                        </div>
+                    </div>
+                </div>
+                <!-- Kişisel Bilgiler -->
+                <div class="profile-section">
+                    <h4 style="margin-bottom: 15px; color: var(--gray-600); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-info-circle"></i>
+                        Kişisel Bilgiler
+                    </h4>
+                    <div class="profile-fields">
+                        <div class="profile-field">
+                            <label>Ad Soyad</label>
+                            <input type="text" id="profileFullName" class="profile-input">
+                        </div>
+                        <div class="profile-field">
+                            <label>Unvan</label>
+                            <input type="text" id="profileTitle" class="profile-input">
+                        </div>
+                        <div class="profile-field">
+                            <label>Bölüm</label>
+                            <input type="text" id="profileDepartment" class="profile-input">
+                        </div>
+                        <div class="profile-field">
+                            <label>Sicil No</label>
+                            <input type="text" id="profileEmployeeId" class="profile-input">
+                        </div>
+                        <div class="profile-field">
+                            <label>Telefon</label>
+                            <input type="text" id="profilePhone" class="profile-input">
+                        </div>
+                    </div>
+                </div>
+                <!-- Sistem Bilgileri -->
+                <div class="profile-section">
+                    <h4 style="margin-bottom: 15px; color: var(--gray-600); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-info-circle"></i>
+                        Sistem Bilgileri
+                    </h4>
+                    <div class="system-info">
+                        <div class="info-item">
+                            <span class="info-label">Yetki Düzeyi:</span>
+                            <span class="admin-badge">
+                                <i class="fas fa-crown"></i>
+                                Tam Yetki
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profil Butonları -->
+                <div class="profile-actions">
+                    <button id="saveProfileBtn" onclick="saveProfile()" class="action-btn approve-btn">
+                        <i class="fas fa-save"></i>
+                        Kaydet
+                    </button>
+                    <button id="cancelProfileBtn" onclick="closeProfile()" class="action-btn reject-btn">
+                        <i class="fas fa-times"></i>
+                        İptal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Proje Detay Modal -->
+    <div id="projectDetailModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalTitle">Proje Detayları</h3>
+          <button class="close-btn" onclick="closeProjectModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Proje detayları buraya gelecek -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeProjectModal()">
+            <i class="fas fa-times"></i>
+            Kapat
+          </button>
+          <button id="downloadBtn" class="btn btn-primary" onclick="downloadCurrentFile()" style="display: none;">
+            <i class="fas fa-download"></i>
+            Dosyayı İndir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+        /* Profil Kartı */
+        .profile-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+        
+        .profile-avatar-large {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .profile-avatar-large i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .profile-info h4 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .profile-info p {
+            margin: 5px 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Profil Bölümleri */
+        .profile-section {
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .profile-fields {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .profile-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .profile-field label {
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+        }
+        
+        .profile-input {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border: 2px solid var(--gray-200) !important;
+            border-radius: 8px !important;
+            background: var(--white) !important;
+            transition: var(--transition) !important;
+            font-size: 1rem !important;
+            font-family: inherit !important;
+        }
+        
+        .profile-input:disabled {
+            background: var(--gray-100) !important;
+            color: var(--gray-600) !important;
+            cursor: not-allowed !important;
+        }
+        
+        .profile-input:focus:not(:disabled) {
+            outline: none !important;
+            border-color: var(--primary-color) !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+        }
+        
+        /* Şifre Alanı */
+        .password-field {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        
+        .toggle-password:hover:not(:disabled) {
+            background: var(--gray-100);
+            color: var(--primary-color);
+        }
+        
+        .toggle-password:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        /* Sistem Bilgileri */
+        .system-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+        
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--success-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Profil Butonları */
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .profile-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .profile-avatar-large {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .profile-avatar-large i {
+                font-size: 1.6rem;
+            }
+            
+            .profile-info h4 {
+                font-size: 1.2rem;
+            }
+            
+            .profile-actions {
+                flex-direction: column;
+            }
+            
+            .profile-actions button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background-color: var(--white);
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .close-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .modal-body {
+            padding: 24px;
+            line-height: 1.6;
+        }
+        
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 20px 24px;
+            border-top: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            border-radius: 0 0 12px 12px;
+        }
+        
+        .project-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .project-detail-item {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .project-detail-item h4 {
+            margin: 0 0 8px 0;
+            color: var(--gray-700);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .project-detail-item p {
+            margin: 0;
+            color: var(--gray-800);
+            font-weight: 500;
+        }
+        
+        .project-description {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            margin: 20px 0;
+        }
+        
+        .project-description h4 {
+            margin: 0 0 12px 0;
+            color: var(--gray-700);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .project-description p {
+            margin: 0;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+        
+        .file-info {
+            background: var(--success-color);
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .file-info.no-file {
+            background: var(--gray-400);
+        }
+        
+        .file-info i {
+            font-size: 1.5rem;
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-details h4 {
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .file-details p {
+            margin: 0;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .status-badge-modal {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-badge-modal.pending {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .status-badge-modal.approved {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .status-badge-modal.rejected {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+            
+            .project-detail-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .modal-footer button {
+                width: 100%;
+            }
+        }
+    </style>
+    
+    <script>
+        // Modal dışına tıklandığında kapat
+        window.onclick = function(event) {
+            const projectModal = document.getElementById('projectDetailModal');
+            
+            if (event.target === projectModal) {
+                closeProjectModal();
+            }
+        };
+        
+        // ESC tuşu ile modal kapat
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeProjectModal();
+            }
+        });
+
+        // Modal fonksiyonları
+        function showModal() {
+            const modal = document.getElementById('projectDetailModal');
+            if (modal) {
+                modal.style.display = 'block';
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('projectDetailModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Reddetme modal'ı için özel fonksiyonlar
+        function showRejectModalOnly() {
+            try {
+                const modal = document.getElementById('projectDetailModal');
+                if (modal) {
+                    modal.style.display = 'block';
+                    console.log('Modal başarıyla gösterildi');
+                    
+                    // Modal açıldıktan sonra kısa bir süre bekleyip butonları kontrol et
+                    setTimeout(() => {
+                        console.log('Modal açıldı, butonlar kontrol ediliyor...');
+                        const buttons = document.querySelectorAll('button');
+                        console.log('Toplam buton sayısı:', buttons.length);
+                    }, 100);
+                } else {
+                    console.error('Modal elementi bulunamadı!');
+                }
+            } catch (error) {
+                console.error('Modal gösterme hatası:', error);
+            }
+        }
+
+        function closeRejectModal() {
+            const modal = document.getElementById('projectDetailModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function closeProjectModal() {
+            const modal = document.getElementById('projectDetailModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Başarı mesajı göster
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--success-color);
+                color: white;
+                padding: 16px 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                animation: slideInRight 0.3s ease;
+            `;
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                ${message}
+            `;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(successDiv);
+                }, 300);
+            }, 3000);
+        }
+
+        // Hata mesajı göster
+        function showErrorMessage(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--danger-color);
+                color: white;
+                padding: 16px 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 10000;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                animation: slideInRight 0.3s ease;
+            `;
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                ${message}
+            `;
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(errorDiv);
+                }, 300);
+            }, 4000);
+        }
+
+        // CSS animasyonları
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOutRight {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes slideIn {
+                from {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+                to {
+                    transform: scale(0.8);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Yönetim Sistemi - Giriş</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        overflow: hidden;
+        height: 100vh;
+        background: #f5f7fa;
+      }
+
+      .login-container {
+        display: flex;
+        height: 100vh;
+        position: relative;
+        background: linear-gradient(135deg, #1e40af 0%, #2563eb 25%, #3b82f6 50%, #60a5fa 75%, #93c5fd 100%);
+        overflow: hidden;
+      }
+
+      /* Floating Bubbles */
+      .bubbles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
+        overflow: hidden;
+      }
+
+      .bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        animation: floatBubble 20s infinite ease-in-out;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.1);
+      }
+
+      .bubble:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        left: 10%;
+        animation-delay: 0s;
+        animation-duration: 25s;
+      }
+
+      .bubble:nth-child(2) {
+        width: 60px;
+        height: 60px;
+        left: 20%;
+        animation-delay: -5s;
+        animation-duration: 20s;
+      }
+
+      .bubble:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        left: 30%;
+        animation-delay: -10s;
+        animation-duration: 30s;
+      }
+
+      .bubble:nth-child(4) {
+        width: 40px;
+        height: 40px;
+        left: 40%;
+        animation-delay: -15s;
+        animation-duration: 18s;
+      }
+
+      .bubble:nth-child(5) {
+        width: 120px;
+        height: 120px;
+        left: 50%;
+        animation-delay: -20s;
+        animation-duration: 35s;
+      }
+
+      .bubble:nth-child(6) {
+        width: 90px;
+        height: 90px;
+        left: 60%;
+        animation-delay: -25s;
+        animation-duration: 22s;
+      }
+
+      .bubble:nth-child(7) {
+        width: 70px;
+        height: 70px;
+        left: 70%;
+        animation-delay: -30s;
+        animation-duration: 28s;
+      }
+
+      .bubble:nth-child(8) {
+        width: 50px;
+        height: 50px;
+        left: 80%;
+        animation-delay: -35s;
+        animation-duration: 15s;
+      }
+
+      .bubble:nth-child(9) {
+        width: 110px;
+        height: 110px;
+        left: 90%;
+        animation-delay: -40s;
+        animation-duration: 40s;
+      }
+
+      .bubble:nth-child(10) {
+        width: 85px;
+        height: 85px;
+        left: 95%;
+        animation-delay: -45s;
+        animation-duration: 32s;
+      }
+
+      @keyframes floatBubble {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        90% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-100px) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      /* Left Panel - Form */
+      .left-panel {
+        flex: 1;
+        max-width: 500px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 60px;
+        position: relative;
+        z-index: 20;
+        box-shadow: 2px 0 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .left-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(180deg, 
+          rgba(37, 99, 235, 0.3) 0%,
+          rgba(59, 130, 246, 0.2) 50%,
+          rgba(147, 197, 253, 0.1) 100%
+        );
+      }
+
+      /* Right Panel - Welcome */
+      .right-panel {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-align: center;
+        position: relative;
+        z-index: 20;
+        padding: 60px;
+        background: transparent;
+      }
+
+      .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 50px;
+      }
+
+      .logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .logo-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #1e293b;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 8px;
+      }
+
+      .form-subtitle {
+        color: #64748b;
+        margin-bottom: 40px;
+        font-size: 1rem;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+        position: relative;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 16px 20px 16px 50px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        background: #ffffff;
+        transition: all 0.3s ease;
+        outline: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-input:focus {
+        border-color: #2563eb;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1), 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .input-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+      }
+
+      .form-input:focus + .input-icon {
+        color: #2563eb;
+      }
+
+      .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        font-size: 0.9rem;
+      }
+
+      .remember-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #64748b;
+      }
+
+      .remember-checkbox {
+        width: 16px;
+        height: 16px;
+        accent-color: #2563eb;
+      }
+
+      .forgot-link {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .forgot-link:hover {
+        text-decoration: underline;
+      }
+
+      .login-button {
+        width: 100%;
+        background: linear-gradient(135deg, #1e40af, #2563eb);
+        color: white;
+        border: none;
+        padding: 18px;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      }
+
+      .login-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+        background: linear-gradient(135deg, #2563eb, #3b82f6);
+      }
+
+      .login-button:active {
+        transform: translateY(0);
+      }
+
+      .login-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .register-link {
+        text-align: center;
+        color: #64748b;
+        font-size: 0.95rem;
+      }
+
+      .register-link a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .register-link a:hover {
+        text-decoration: underline;
+      }
+
+      /* Right Panel Content */
+      .welcome-content {
+        max-width: 400px;
+        text-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+      }
+
+      .welcome-title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 20px;
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 50%, #e2e8f0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
+        filter: drop-shadow(0 2px 4px rgba(37, 99, 235, 0.3));
+      }
+
+      .welcome-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.95;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .university-info {
+        font-size: 0.95rem;
+        opacity: 0.85;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      /* Error messages */
+      .error-message {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 6px;
+        display: none;
+      }
+
+      .error-message.show {
+        display: block;
+      }
+
+      .form-input.error {
+        border-color: #e74c3c;
+        background: #fef2f2;
+      }
+
+      /* Loading and success states */
+      .login-button.loading {
+        position: relative;
+        color: transparent;
+      }
+
+      .login-button.loading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-top: 2px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .login-button.success {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+      }
+
+      /* Shake animation */
+      .shake {
+        animation: shake 0.5s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+      }
+
+      @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .login-container {
+          flex-direction: column;
+        }
+
+        .left-panel {
+          max-width: none;
+          padding: 40px 30px;
+        }
+
+        .left-panel::before {
+          display: none;
+        }
+
+        .right-panel {
+          padding: 40px 30px;
+          min-height: 50vh;
+        }
+
+        .welcome-title {
+          font-size: 2.5rem;
+        }
+
+        .form-title {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .left-panel, .right-panel {
+          padding: 30px 20px;
+        }
+
+        .welcome-title {
+          font-size: 2rem;
+        }
+
+        .welcome-subtitle {
+          font-size: 1rem;
+        }
+      }
+    </style>
+</head>
+<body>
+  <div class="login-container">
+    <!-- Floating Bubbles -->
+    <div class="bubbles">
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+    </div>
+
+    <!-- Left Panel - Login Form -->
+    <div class="left-panel">
+      <div class="logo-section">
+        <img src="/assets/images/uniLogo.png" alt="İSTÜ" class="logo">
+        <div class="logo-text">Proje Yönetim Sistemi</div>
+      </div>
+
+      <div class="form-title">Giriş Yap</div>
+      <div class="form-subtitle">Hesabınıza erişmek için bilgilerinizi girin</div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <input type="email" id="email" name="email" class="form-input" placeholder="Kurumsal e-posta adresinizi girin" required>
+          <i class="fas fa-envelope input-icon"></i>
+          <div class="error-message" id="email-error">E-posta gereklidir</div>
+        </div>
+
+        <div class="form-group">
+          <input type="password" id="password" name="password" class="form-input" placeholder="Şifrenizi girin" required>
+          <i class="fas fa-lock input-icon"></i>
+          <div class="error-message" id="password-error">Şifre gereklidir</div>
+        </div>
+
+        <div class="remember-forgot">
+          <label class="remember-group">
+            <input type="checkbox" id="remember" name="remember" class="remember-checkbox">
+            <span>Beni hatırla</span>
+          </label>
+          <a href="forgot_password.html" class="forgot-link">Şifremi unuttum?</a>
+        </div>
+
+        <button type="submit" class="login-button" id="loginButton">
+          <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>
+          Giriş Yap
+        </button>
+      </form>
+
+      <div class="register-link">
+        Hesabınız yok mu? <a href="register.html" id="registerLink">Kayıt olun</a>
+      </div>
+    </div>
+
+    <!-- Right Panel - Welcome Section -->
+    <div class="right-panel">
+      <div class="welcome-content">
+        <h1 class="welcome-title">Hoşgeldiniz.</h1>
+        <p class="welcome-subtitle">
+          Proje yönetim sisteminize hoşgeldiniz. Projelerinizi yönetin, takip edin ve başarıya ulaşın.
+        </p>
+        <div class="university-info">
+          <strong>Bilimin Işığında, Geleceğe Yolculuk</strong><br>
+          Mühendislik ve Doğa Bilimleri Fakültesi<br>
+          Bilgisayar Mühendisliği Bölümü
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    // Utility functions
+    function showError(fieldId, message) {
+      const field = document.getElementById(fieldId);
+      const errorDiv = document.getElementById(fieldId + '-error');
+      
+      if (field && errorDiv) {
+        field.classList.add('error');
+        errorDiv.textContent = message;
+        errorDiv.classList.add('show');
+      }
+    }
+
+    function clearErrors() {
+      const fields = document.querySelectorAll('.form-input');
+      const errors = document.querySelectorAll('.error-message');
+      
+      fields.forEach(field => field.classList.remove('error'));
+      errors.forEach(error => error.classList.remove('show'));
+    }
+
+    function validateEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+
+
+    // DOM Content Loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      
+      // Form handling
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) {
+        loginForm.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value.trim();
+          const button = document.getElementById('loginButton');
+          const leftPanel = document.querySelector('.left-panel');
+          
+          // Reset previous errors
+          clearErrors();
+          
+          // Validation
+          let hasError = false;
+          
+          if (!email) {
+            showError('email', 'E-posta gereklidir');
+            hasError = true;
+          } else if (!validateEmail(email)) {
+            showError('email', 'Geçersiz e-posta girin');
+            hasError = true;
+          }
+          
+          if (!password) {
+            showError('password', 'Şifre gereklidir');
+            hasError = true;
+          }
+          
+          if (hasError) {
+            if (leftPanel) {
+              leftPanel.classList.add('shake');
+              setTimeout(() => leftPanel.classList.remove('shake'), 500);
+            }
+            return;
+          }
+          
+          // Loading state
+          if (button) {
+            button.classList.add('loading');
+            button.disabled = true;
+          }
+          
+          try {
+            // Backend'e login isteği gönder
+            const response = await fetch('/api/auth.php', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                action: 'login',
+                email: email,
+                password: password
+              })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+              // Başarılı giriş
+              if (button) {
+                button.classList.remove('loading');
+                button.classList.add('success');
+                button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Başarılı! Yönlendiriliyor...';
+              }
+              
+              // Kullanıcı bilgilerini sakla
+              localStorage.setItem('userLoggedIn', 'true');
+              localStorage.setItem('currentUser', result.user.full_name);
+              localStorage.setItem('userRole', result.user.role);
+              localStorage.setItem('username', result.user.username);
+              localStorage.setItem('userId', result.user.id);
+              
+              // Role göre yönlendir
+              setTimeout(() => {
+                if (result.user.role === 'admin') {
+                  window.location.href = '/pages/dashboard/admin_dashboard.html';
+                } else {
+                  window.location.href = '/pages/dashboard/dashboard.html';
+                }
+              }, 1500);
+              
+            } else {
+              // Hata
+              if (button) {
+                button.classList.remove('loading');
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>Giriş Yap';
+              }
+              
+              showError('password', result.message || 'Giriş başarısız');
+              if (leftPanel) {
+                leftPanel.classList.add('shake');
+                setTimeout(() => leftPanel.classList.remove('shake'), 500);
+              }
+            }
+          } catch (error) {
+            // Bağlantı hatası durumunda eski yöntemi kullan
+            console.log('Backend bağlantısı başarısız, demo modunda çalışıyor...');
+            
+            setTimeout(() => {
+              if (email === 'admin@example.com' && password === 'admin123') {
+                // Admin Success
+                if (button) {
+                  button.classList.remove('loading');
+                  button.classList.add('success');
+                  button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Admin Girişi! Yönlendiriliyor...';
+                }
+                
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('currentUser', 'Admin');
+                localStorage.setItem('userRole', 'admin');
+                localStorage.setItem('username', email);
+                
+                setTimeout(() => {
+                  window.location.href = 'admin_dashboard.html';
+                }, 1500);
+                
+              } else if (email === 'demo@example.com' && password === 'demo123') {
+                // User Success
+                if (button) {
+                  button.classList.remove('loading');
+                  button.classList.add('success');
+                  button.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Başarılı! Yönlendiriliyor...';
+                }
+                
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('currentUser', 'Demo Kullanıcı');
+                localStorage.setItem('userRole', 'user');
+                localStorage.setItem('username', email);
+                
+                setTimeout(() => {
+                  window.location.href = 'dashboard.html';
+                }, 1500);
+                
+              } else {
+                // Error
+                if (button) {
+                  button.classList.remove('loading');
+                  button.disabled = false;
+                  button.innerHTML = '<i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i>Giriş Yap';
+                }
+                
+                showError('password', 'Geçersiz kullanıcı adı veya şifre');
+                if (leftPanel) {
+                  leftPanel.classList.add('shake');
+                  setTimeout(() => leftPanel.classList.remove('shake'), 500);
+                }
+              }
+            }, 1000);
+          }
+        });
+      }
+
+      // Clear errors on input
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      
+      if (emailInput) {
+        emailInput.addEventListener('input', function() {
+          this.classList.remove('error');
+          const errorDiv = document.getElementById('email-error');
+          if (errorDiv) errorDiv.classList.remove('show');
+        });
+      }
+
+      if (passwordInput) {
+        passwordInput.addEventListener('input', function() {
+          this.classList.remove('error');
+          const errorDiv = document.getElementById('password-error');
+          if (errorDiv) errorDiv.classList.remove('show');
+        });
+      }
+
+      // Demo credentials quick fill (Ctrl+D)
+      document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'd') {
+          e.preventDefault();
+          if (emailInput) emailInput.value = 'demo@example.com';
+          if (passwordInput) passwordInput.value = 'demo123';
+          clearErrors();
+        }
+      });
+
+      // Input focus effects
+      document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('focus', function() {
+          this.parentElement.classList.add('focused');
+        });
+
+        input.addEventListener('blur', function() {
+          this.parentElement.classList.remove('focused');
+        });
+      });
+
+      // Register link with smooth transition
+      const registerLink = document.getElementById('registerLink');
+      if (registerLink) {
+        registerLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          
+          document.body.style.transition = 'opacity 0.5s ease';
+          document.body.style.opacity = '0';
+          
+          setTimeout(() => {
+            window.location.href = 'register.html';
+          }, 500);
+        });
+      }
+
+
+
+    });
+  </script>
+</body>
+</html> 

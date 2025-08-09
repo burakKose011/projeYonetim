@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kullanıcı Bilgileri</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <div class="logo-container">
+        <img src="../../assets/images/uniLogo.png" alt="İskenderun Teknik Üniversitesi" class="logo">
+        <div class="logo-glow"></div>
+      </div>
+      <div class="header-text">
+        <h1 class="main-title">Proje Yönetim Sistemi</h1>
+        <div class="university-info">
+          <span class="university-name">İskenderun Teknik Üniversitesi</span>
+          <span class="faculty-name">Mühendislik ve Doğa Bilimleri Fakültesi</span>
+          <span class="department-name">Bilgisayar Mühendisliği Bölümü</span>
+        </div>
+      </div>
+    </div>
+    <div class="header-decoration"></div>
+  </div>
+  <div class="container">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">
+          <i class="fas fa-rocket"></i>
+          Proje Yönetimi
+        </h3>
+        <p class="sidebar-subtitle">Projelerinizi yönetin ve takip edin</p>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Ana Menü</h4>
+        <div class="sidebar-nav">
+          <a href="dashboard.html">
+            <i class="fas fa-tachometer-alt"></i>
+            Panel
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Proje İşlemleri</h4>
+        <div class="sidebar-nav">
+          <a href="../projects/add_project.html">
+            <i class="fas fa-plus-circle"></i>
+            Yeni Proje Ekle
+          </a>
+          <a href="../projects/project_list.html">
+            <i class="fas fa-list-alt"></i>
+            Proje Listesi
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <h4 class="sidebar-section-title">Hesap</h4>
+        <div class="sidebar-nav">
+          <a href="profile.html" class="active">
+            <i class="fas fa-user-circle"></i>
+            Bilgilerim
+          </a>
+          <a href="../auth/login.html">
+            <i class="fas fa-sign-out-alt"></i>
+            Çıkış
+          </a>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <p class="sidebar-version">v2.0.1 - 2025</p>
+      </div>
+    </nav>
+    <main class="main-content" id="main-content">
+      <h2>
+        <i class="fas fa-user-circle" style="margin-right: 12px; color: var(--primary-color);"></i>
+        Kullanıcı Bilgileri
+      </h2>
+      
+      <div style="display: grid; gap: 32px;">
+        <!-- Profil Özeti -->
+        <div style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 32px; border-radius: var(--border-radius); box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 24px;">
+          <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+            <i class="fas fa-user" style="font-size: 2rem; color: white;"></i>
+          </div>
+          <div>
+            <h3 style="margin: 0 0 8px 0; font-size: 1.8rem; font-weight: 700;" id="userName">Yükleniyor...</h3>
+            <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;" id="userDepartment">Yükleniyor...</p>
+            <p style="margin: 4px 0 0 0; font-size: 0.95rem; opacity: 0.8;" id="userTitle">Yükleniyor...</p>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form id="profileForm" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+          <div>
+            <label>
+              <i class="fas fa-user" style="margin-right: 8px; color: var(--primary-color);"></i>
+              Ad Soyad:
+            </label>
+            <input type="text" name="adsoyad" id="adsoyad" placeholder="Adınızı ve soyadınızı girin">
+          </div>
+
+          <div>
+            <label>
+              <i class="fas fa-graduation-cap" style="margin-right: 8px; color: var(--primary-color);"></i>
+              Akademik Unvan:
+            </label>
+            <select name="unvan" id="unvan">
+              <option value="Prof. Dr.">Prof. Dr.</option>
+              <option value="Doç. Dr.">Doç. Dr.</option>
+              <option value="Dr. Öğr. Üyesi">Dr. Öğr. Üyesi</option>
+              <option value="Öğr. Gör.">Öğr. Gör.</option>
+              <option value="Arş. Gör.">Arş. Gör.</option>
+              <option value="Öğrenci">Öğrenci</option>
+            </select>
+          </div>
+
+          <div>
+            <label>
+              <i class="fas fa-building" style="margin-right: 8px; color: var(--primary-color);"></i>
+              Bölüm:
+            </label>
+            <input type="text" name="bolum" id="bolum" placeholder="Bölümünüzü girin">
+          </div>
+
+          <div>
+            <label>
+              <i class="fas fa-id-card" style="margin-right: 8px; color: var(--primary-color);"></i>
+              Üniversite Sicil Numarası:
+            </label>
+            <input type="text" name="sicilno" id="sicilno" placeholder="Sicil/Personel numaranızı girin">
+          </div>
+
+          <div>
+            <label>
+              <i class="fas fa-envelope" style="margin-right: 8px; color: var(--primary-color);"></i>
+              E-posta (kurumsal):
+            </label>
+            <input type="email" name="email" id="email" placeholder="E-posta adresinizi girin">
+          </div>
+
+          <div>
+            <label>
+              <i class="fas fa-phone" style="margin-right: 8px; color: var(--primary-color);"></i>
+              Telefon Numarası:
+            </label>
+            <input type="tel" name="telefon" id="telefon" placeholder="Telefon numaranızı girin">
+          </div>
+
+          <div style="grid-column: 1 / -1;">
+            <label>
+              <i class="fas fa-lock" style="margin-right: 8px; color: var(--primary-color);"></i>
+              Şifre Değiştir:
+            </label>
+            <input type="password" name="sifre" id="sifre" placeholder="Yeni şifre (boş bırakırsanız değişmez)">
+            <div style="margin-top: 8px; font-size: 0.9rem; color: var(--gray-600);">
+              <i class="fas fa-info-circle" style="margin-right: 6px;"></i>
+              Şifrenizi değiştirmek istemiyorsanız bu alanı boş bırakın
+            </div>
+          </div>
+
+          <div style="grid-column: 1 / -1; display: flex; gap: 16px; justify-content: flex-end; margin-top: 16px;">
+            <button type="button" onclick="resetForm()" style="background: var(--gray-500); color: white; border: none; padding: 14px 28px; border-radius: var(--border-radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;">
+              <i class="fas fa-undo"></i>
+              Sıfırla
+            </button>
+            <button type="submit" style="background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; border: none; padding: 14px 28px; border-radius: var(--border-radius); font-size: 1rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; box-shadow: var(--shadow-md);">
+              <i class="fas fa-save"></i>
+              Güncelle
+            </button>
+          </div>
+        </form>
+
+        <!-- Hesap Güvenliği -->
+        <div style="background: var(--white); border: 1px solid var(--gray-200); padding: 24px; border-radius: var(--border-radius); box-shadow: var(--shadow-sm);">
+          <h3 style="margin: 0 0 20px 0; color: var(--gray-800); display: flex; align-items: center;">
+            <i class="fas fa-shield-alt" style="margin-right: 12px; color: var(--success-color);"></i>
+            Hesap Güvenliği
+          </h3>
+          <div style="display: grid; gap: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--gray-50); border-radius: 8px;">
+              <div>
+                <div style="font-weight: 600; color: var(--gray-800);">Son Giriş</div>
+                <div style="font-size: 0.9rem; color: var(--gray-600);">Bugün, 14:30</div>
+              </div>
+              <i class="fas fa-check-circle" style="color: var(--success-color); font-size: 1.2rem;"></i>
+            </div>
+            <!-- İki Faktörlü Doğrulama bölümü kaldırıldı -->
+          </div>
+        </div>
+
+        <!-- İstatistikler -->
+        <div style="background: rgba(102, 126, 234, 0.05); border: 1px solid rgba(102, 126, 234, 0.1); padding: 24px; border-radius: var(--border-radius);">
+          <h3 style="margin: 0 0 20px 0; color: var(--gray-800); display: flex; align-items: center;">
+            <i class="fas fa-chart-bar" style="margin-right: 12px; color: var(--primary-color);"></i>
+            Aktivite Özeti
+          </h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px;">
+            <div style="text-align: center;">
+              <div id="stat-total" style="font-size: 2rem; font-weight: 700; color: var(--primary-color);">0</div>
+              <div style="font-size: 0.9rem; color: var(--gray-600);">Toplam Proje</div>
+            </div>
+            <div style="text-align: center;">
+              <div id="stat-completed" style="font-size: 2rem; font-weight: 700; color: var(--success-color);">0</div>
+              <div style="font-size: 0.9rem; color: var(--gray-600);">Tamamlanan</div>
+            </div>
+            <div style="text-align: center;">
+              <div id="stat-progress" style="font-size: 2rem; font-weight: 700; color: var(--warning-color);">0</div>
+              <div style="font-size: 0.9rem; color: var(--gray-600);">Devam Eden</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer>
+    <div>Proje Yönetim Sistemi 2025<br>Proje Yönetim Sistemi - Burak Köse - İskenderun Teknik Üniversitesi</div>
+  </footer>
+  <script>
+    window.onload = function() {
+      document.getElementById('main-content').classList.add('visible');
+      fetchUserProfile();
+      fetchUserStats();
+    };
+
+    async function fetchUserProfile() {
+      try {
+                    const response = await fetch('../../api/auth.php?action=userinfo');
+        const result = await response.json();
+        
+        if (result.success) {
+          const user = result.user;
+          
+          // Profil özeti
+          document.getElementById('userName').textContent = user.full_name || 'İsimsiz Kullanıcı';
+          document.getElementById('userDepartment').textContent = user.department || 'Bölüm belirtilmemiş';
+          document.getElementById('userTitle').textContent = user.title || 'Unvan belirtilmemiş';
+          
+          // Form alanları
+          document.getElementById('adsoyad').value = user.full_name || '';
+          document.getElementById('unvan').value = user.title || '';
+          document.getElementById('bolum').value = user.department || '';
+          document.getElementById('sicilno').value = user.employee_id || '';
+          document.getElementById('email').value = user.email || '';
+          document.getElementById('telefon').value = user.phone || '';
+          
+        } else {
+          console.error('Kullanıcı bilgileri alınamadı:', result.message);
+          document.getElementById('userName').textContent = 'Hata';
+          document.getElementById('userDepartment').textContent = 'Bilgiler yüklenemedi';
+          document.getElementById('userTitle').textContent = 'Hata';
+        }
+      } catch (error) {
+        console.error('Kullanıcı bilgileri yüklenirken hata:', error);
+        document.getElementById('userName').textContent = 'Bağlantı Hatası';
+        document.getElementById('userDepartment').textContent = 'Bilgiler yüklenemedi';
+        document.getElementById('userTitle').textContent = 'Hata';
+      }
+    }
+
+    async function fetchUserStats() {
+      try {
+                    const response = await fetch('../../api/projects.php?action=list');
+        const result = await response.json();
+        if (result.success) {
+          const projects = result.projects || [];
+          document.getElementById('stat-total').textContent = projects.length;
+          document.getElementById('stat-completed').textContent = projects.filter(p => p.status === 'approved').length;
+          document.getElementById('stat-progress').textContent = projects.filter(p => p.status === 'pending').length;
+        }
+      } catch (error) {
+        // Hata durumunda değerler 0 kalır
+      }
+    }
+
+    // Form gönderme
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>Güncelleniyor...';
+      submitBtn.disabled = true;
+      
+      // Form verilerini topla
+      const data = {
+        full_name: document.getElementById('adsoyad').value,
+        title: document.getElementById('unvan').value,
+        department: document.getElementById('bolum').value,
+        employee_id: document.getElementById('sicilno').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('telefon').value,
+        password: document.getElementById('sifre').value
+      };
+
+      try {
+                    const response = await fetch('../../api/auth.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'updateProfile', ...data })
+        });
+        const result = await response.json();
+        if (result.success) {
+        submitBtn.innerHTML = '<i class="fas fa-check"></i>Güncellendi!';
+          fetchUserProfile();
+        } else {
+          submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>Hata!';
+          alert(result.message || 'Güncelleme başarısız!');
+        }
+      } catch (error) {
+        submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>Hata!';
+        alert('Sunucuya bağlanılamadı!');
+      }
+        setTimeout(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+      }, 1500);
+    });
+
+    // Form sıfırlama
+    function resetForm() {
+      if (confirm('Tüm değişiklikleri geri almak istediğinizden emin misiniz?')) {
+        document.getElementById('profileForm').reset();
+        document.getElementById('adsoyad').value = 'Demo Kullanıcı';
+        document.getElementById('unvan').value = 'Dr. Öğr. Üyesi';
+        document.getElementById('bolum').value = 'Bilgisayar Mühendisliği';
+        document.getElementById('sicilno').value = '2024001';
+        document.getElementById('email').value = 'demo@iste.edu.tr';
+        document.getElementById('telefon').value = '05551234567';
+      }
+    }
+  </script>
+</body>
+</html> 
